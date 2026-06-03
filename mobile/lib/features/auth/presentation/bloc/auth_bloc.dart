@@ -27,7 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(AuthLoading());
     try {
-      await _authRepository.login('placeholder@email.com', 'password');
+      await _authRepository.login(event.email, event.password);
       emit(AuthAuthenticated());
     } catch (e, stackTrace) {
       AppLogger.error('Login failed', error: e, stackTrace: stackTrace);
