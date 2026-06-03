@@ -2,30 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/bloc/app_bloc_observer.dart';
+import 'core/config/app_config.dart';
 import 'core/di/injection_container.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  setupDependencies();
+  final appConfig = AppConfig.fromEnvironment();
+  setupDependencies(appConfig);
   Bloc.observer = AppBlocObserver();
 
   runApp(
     BlocProvider.value(
       value: sl<AuthBloc>(),
-      child: const MyApp(),
+      child: MyApp(appConfig: appConfig),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.appConfig});
+
+  final AppConfig appConfig;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: appConfig.appName,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -44,7 +48,9 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(
+        title: '${appConfig.appName} (${appConfig.environmentLabel})',
+      ),
     );
   }
 }
