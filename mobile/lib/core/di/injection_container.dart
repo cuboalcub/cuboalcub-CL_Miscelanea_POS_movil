@@ -19,6 +19,8 @@ void _registerRepositories() {
 
 void _registerBlocs() {
   if (!sl.isRegistered<AuthBloc>()) {
-    sl.registerLazySingleton<AuthBloc>(() => AuthBloc());
+    sl.registerLazySingleton<AuthBloc>(
+      () => AuthBloc(authRepository: sl<AuthRepository>()),
+    );
   }
 }
