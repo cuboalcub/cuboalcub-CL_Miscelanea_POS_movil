@@ -1,10 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/errors/error_mapper.dart';
+import '../../../../core/errors/logger.dart';
+import '../../domain/repositories/auth_repository.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthInitial()) {
+  final AuthRepository _authRepository;
+
+  AuthBloc({required AuthRepository authRepository})
+      : _authRepository = authRepository,
+        super(AuthInitial()) {
     on<AppStarted>(_onAppStarted);
     on<AuthLoginRequested>(_onLoginRequested);
     on<AuthLogoutRequested>(_onLogoutRequested);
@@ -14,13 +21,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthUnauthenticated());
   }
 
-  void _onLoginRequested(AuthLoginRequested event, Emitter<AuthState> emit) {
+  Future<void> _onLoginRequested(
+    AuthLoginRequested event,
+    Emitter<AuthState> emit,
+  ) async {
     emit(AuthLoading());
-    emit(AuthAuthenticated());
+    try {
+      await _authRepository.login('placeholder@email.com', 'password');
+      emit(AuthAuthenticated());
+    } catch (e, stackTrace) {
+      AppLogger.error('Login failed', error: e, stackTrace: stackTrace);
+      final failure = ErrorMapper.mapError(e);
+      emit(AuthError(failure));
+    }
   }
 
-  void _onLogoutRequested(AuthLogoutRequested event, Emitter<AuthState> emit) {
+  Future<void> _onLogoutRequested(
+    AuthLogoutRequested event,
+    Emitter<AuthState> emit,
+  ) async {
     emit(AuthLoading());
-    emit(AuthUnauthenticated());
+    try {
+      await _authRepository.logout();
+      emit(AuthUnauthenticated());
+    } catch (e, stackTrace) {
+      AppLogger.error('Logout failed', error: e, stackTrace: stackTrace);
+      final failure = ErrorMapper.mapError(e);
+      emit(AuthError(failure));
+    }
   }
 }
