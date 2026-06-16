@@ -2,9 +2,11 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/logger.dart';
+import '../../../../core/services/session_manager.dart';
+
 import '../../domain/entities/auth_result.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../datasources/session_manager.dart';
+
 import '../models/login_request.dart';
 import '../models/login_response.dart';
 
@@ -22,17 +24,22 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<AuthResult> login(String email, String password) async {
     try {
       final request = LoginRequest(email: email, password: password);
+
       final response = await _dio.post(
         '/auth/login',
         data: request.toJson(),
       );
+
       final loginResponse = LoginResponse.fromJson(response.data);
+
       final authResult = AuthResult(
         token: loginResponse.token,
         empresaId: loginResponse.empresaId,
         usuarioId: loginResponse.usuarioId,
       );
+
       await _sessionManager.saveSession(authResult);
+
       return authResult;
     } on DioException catch (e) {
       AppLogger.error('Login network error', error: e);
@@ -85,6 +92,7 @@ class AuthRepositoryImpl implements AuthRepository {
         );
       }
     }
+
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.receiveTimeout) {
       return NetworkException(
@@ -92,12 +100,14 @@ class AuthRepositoryImpl implements AuthRepository {
         code: 'TIMEOUT',
       );
     }
+
     if (e.type == DioExceptionType.connectionError) {
       return NetworkException(
         'Error de conexión. Verifica tu conexión a internet.',
         code: 'CONNECTION_ERROR',
       );
     }
+
     return NetworkException(
       e.message ?? 'Error de red',
       code: 'NETWORK_ERROR',
