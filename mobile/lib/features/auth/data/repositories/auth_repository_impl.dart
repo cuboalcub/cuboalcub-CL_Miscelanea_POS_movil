@@ -2,15 +2,26 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/logger.dart';
+import '../../../../core/services/session_manager.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
+  final SessionManager _sessionManager;
+
+  AuthRepositoryImpl({required SessionManager sessionManager})
+      : _sessionManager = sessionManager;
+
   @override
   Future<void> login(String email, String password) async {
     try {
       // Placeholder implementation
       // TODO: Integrate with Supabase or other data source
       await Future.delayed(const Duration(milliseconds: 500));
+      _sessionManager.saveSession(
+        token: 'placeholder_token_${DateTime.now().millisecondsSinceEpoch}',
+        userId: email.hashCode.toString(),
+        email: email,
+      );
     } on DioException catch (e) {
       AppLogger.error('Login network error', error: e);
       throw NetworkException(
@@ -29,9 +40,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> logout() async {
     try {
-      // Placeholder implementation
-      // TODO: Clear session data
-      await Future.delayed(const Duration(milliseconds: 500));
+      _sessionManager.clearSession();
     } catch (e, stackTrace) {
       AppLogger.error('Logout failed', error: e, stackTrace: stackTrace);
       throw AuthException(
@@ -44,9 +53,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<String?> getCurrentUser() async {
     try {
-      // Placeholder implementation
-      // TODO: Retrieve current user from local storage or API
-      return null;
+      return _sessionManager.email;
     } catch (e, stackTrace) {
       AppLogger.error('Get current user failed', error: e, stackTrace: stackTrace);
       throw StorageException(
