@@ -1,31 +1,43 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:mobile/core/config/app_config.dart';
-import 'package:mobile/main.dart';
+import 'package:mobile/features/auth/domain/entities/auth_result.dart';
+import 'package:mobile/features/auth/domain/repositories/auth_repository.dart';
+import 'package:mobile/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mobile/features/auth/presentation/bloc/auth_event.dart';
+import 'package:mobile/features/auth/presentation/pages/login_page.dart';
+
+class _MockAuthRepository implements AuthRepository {
+  @override
+  Future<AuthResult> login(String email, String password) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> logout() async {}
+
+  @override
+  Future<AuthResult?> getCurrentUser() async => null;
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp(appConfig: AppConfig.fromEnvironment()));
+  testWidgets('LoginPage is displayed when unauthenticated', (tester) async {
+    final authBloc = AuthBloc(authRepository: _MockAuthRepository());
+    authBloc.add(const AppStarted());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(
+      BlocProvider<AuthBloc>.value(
+        value: authBloc,
+        child: const MaterialApp(home: LoginPage()),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Tiendita POS'), findsOneWidget);
+    expect(find.text('Inicia sesión para continuar'), findsOneWidget);
+    expect(find.byType(TextFormField), findsNWidgets(2));
+    expect(find.text('Iniciar Sesión'), findsOneWidget);
   });
 }
