@@ -17,8 +17,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLogoutRequested>(_onLogoutRequested);
   }
 
-  void _onAppStarted(AppStarted event, Emitter<AuthState> emit) {
-    emit(AuthUnauthenticated());
+  Future<void> _onAppStarted(
+    AppStarted event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      final session = await _authRepository.getCurrentUser();
+      if (session != null) {
+        emit(AuthAuthenticated(authResult: session));
+      } else {
+        emit(AuthUnauthenticated());
+      }
+    } catch (e) {
+      emit(AuthUnauthenticated());
+    }
   }
 
   Future<void> _onLoginRequested(
@@ -27,8 +39,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(AuthLoading());
     try {
-      await _authRepository.login(event.email, event.password);
-      emit(AuthAuthenticated());
+      final authResult =
+          await _authRepository.login(event.email, event.password);
+      emit(AuthAuthenticated(authResult: authResult));
     } catch (e, stackTrace) {
       AppLogger.error('Login failed', error: e, stackTrace: stackTrace);
       final failure = ErrorMapper.mapError(e);
