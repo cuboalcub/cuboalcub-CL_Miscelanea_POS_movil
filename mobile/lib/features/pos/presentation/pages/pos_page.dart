@@ -6,15 +6,9 @@ import '../../../products/domain/entities/product.dart';
 import '../../../products/presentation/bloc/search_bloc.dart';
 import '../../../products/presentation/bloc/search_event.dart';
 import '../../../products/presentation/bloc/search_state.dart';
-
-class CartItem {
-  final Product product;
-  int quantity;
-
-  CartItem({required this.product, this.quantity = 1});
-
-  double get subtotal => product.precioVenta * quantity;
-}
+import '../bloc/cart_bloc.dart';
+import '../bloc/cart_event.dart';
+import '../bloc/cart_state.dart';
 
 class POSPage extends StatefulWidget {
   const POSPage({super.key});
@@ -25,7 +19,6 @@ class POSPage extends StatefulWidget {
 
 class _POSPageState extends State<POSPage> {
   final _searchController = TextEditingController();
-  final List<CartItem> _cart = [];
   String _currentQuery = '';
 
   @override
@@ -49,42 +42,19 @@ class _POSPageState extends State<POSPage> {
 
   void _addToCart(Product product) {
     print('[POS UI] Adding to cart: ${product.nombre}');
-    setState(() {
-      final existingIndex = _cart.indexWhere(
-        (item) => item.product.id == product.id,
-      );
-      if (existingIndex >= 0) {
-        _cart[existingIndex].quantity++;
-        print('[POS UI] Incremented quantity for ${product.nombre}');
-      } else {
-        _cart.add(CartItem(product: product));
-        print('[POS UI] Added new item: ${product.nombre}');
-      }
-    });
+    context.read<CartBloc>().add(CartProductAdded(product: product));
   }
 
-  void _incrementQuantity(int index) {
-    setState(() {
-      _cart[index].quantity++;
-    });
+  void _incrementQuantity(String productId) {
+    context.read<CartBloc>().add(CartQuantityIncremented(productId: productId));
   }
 
-  void _decrementQuantity(int index) {
-    setState(() {
-      if (_cart[index].quantity > 1) {
-        _cart[index].quantity--;
-      } else {
-        _cart.removeAt(index);
-      }
-    });
+  void _decrementQuantity(String productId) {
+    context.read<CartBloc>().add(CartQuantityDecremented(productId: productId));
   }
-
-  int get _totalItems => _cart.fold(0, (sum, item) => sum + item.quantity);
-
-  double get _subtotal => _cart.fold(0, (sum, item) => sum + item.subtotal);
 
   void _onCheckout() {
-    print('[POS UI] Checkout tapped - cart has ${_cart.length} items');
+    print('[POS UI] Checkout tapped');
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Funcionalidad pendiente'),
@@ -96,18 +66,33 @@ class _POSPageState extends State<POSPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => _buildCartBottomSheet(),
+      builder: (_) => BlocProvider.value(
+        value: context.read<CartBloc>(),
+        child: Builder(
+          builder: (sheetContext) => _buildCartBottomSheet(sheetContext),
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     print('[POS UI] POSPage build called');
-    return BlocProvider(
-      create: (_) {
-        print('[POS UI] SearchBloc create called');
-        return sl<SearchBloc>();
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) {
+            print('[POS UI] SearchBloc create called');
+            return sl<SearchBloc>();
+          },
+        ),
+        BlocProvider(
+          create: (_) {
+            print('[POS UI] CartBloc create called');
+            return sl<CartBloc>();
+          },
+        ),
+      ],
       child: Builder(
         builder: (context) {
           return Scaffold(
@@ -211,228 +196,243 @@ class _POSPageState extends State<POSPage> {
   }
 
   Widget _buildCartSummaryBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, -2),
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, state) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 4,
+                offset: const Offset(0, -2),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (_cart.isNotEmpty)
-              GestureDetector(
-                onTap: _showCartSheet,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.shopping_cart,
-                        size: 20,
-                        color: Theme.of(context).colorScheme.primary,
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (state.items.isNotEmpty)
+                  GestureDetector(
+                    onTap: _showCartSheet,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.shopping_cart,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '${state.totalItems} producto${state.totalItems == 1 ? '' : 's'} '
+                            '- \$${state.subtotal.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            'Ver carrito',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          const Icon(Icons.chevron_right, size: 20),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '$_totalItems producto${_totalItems == 1 ? '' : 's'} '
-                        '- \$${_subtotal.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                    ),
+                  ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: state.items.isEmpty ? null : _onCheckout,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const Spacer(),
-                      Text(
-                        'Ver carrito',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                    ),
+                    child: const Text(
+                      'Cobrar',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
-                      const Icon(Icons.chevron_right, size: 20),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                onPressed: _cart.isEmpty ? null : _onCheckout,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'Cobrar',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildCartBottomSheet() {
+  Widget _buildCartBottomSheet(BuildContext context) {
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       minChildSize: 0.3,
       maxChildSize: 0.9,
       expand: false,
       builder: (context, scrollController) {
-        return Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          ),
-          child: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 8),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
+        return BlocBuilder<CartBloc, CartState>(
+          builder: (context, state) {
+            return Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    const Text(
-                      'Carrito',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+              child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    const Spacer(),
-                    if (_cart.isNotEmpty)
-                      TextButton(
-                        onPressed: () {
-                          setState(() => _cart.clear());
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Vaciar'),
-                      ),
-                  ],
-                ),
-              ),
-              const Divider(height: 1),
-              Expanded(
-                child: _cart.isEmpty
-                    ? const Center(child: Text('El carrito está vacío'))
-                    : ListView.builder(
-                        controller: scrollController,
-                        itemCount: _cart.length,
-                        itemBuilder: (context, index) {
-                          final item = _cart[index];
-                          return ListTile(
-                            title: Text(item.product.nombre),
-                            subtitle: Text(
-                              '\$${item.product.precioVenta.toStringAsFixed(2)} x ${item.quantity}',
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.remove_circle_outline),
-                                  onPressed: () => _decrementQuantity(index),
-                                ),
-                                Text(
-                                  '${item.quantity}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.add_circle_outline),
-                                  onPressed: () => _incrementQuantity(index),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-              ),
-              const Divider(height: 1),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Productos:'),
-                        Text('$_totalItems'),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
                       children: [
                         const Text(
-                          'Total:',
+                          'Carrito',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                          '\$${_subtotal.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        const Spacer(),
+                        if (state.items.isNotEmpty)
+                          TextButton(
+                            onPressed: () {
+                              context.read<CartBloc>().add(const CartCleared());
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Vaciar'),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: state.items.isEmpty
+                        ? const Center(child: Text('El carrito está vacío'))
+                        : ListView.builder(
+                            controller: scrollController,
+                            itemCount: state.items.length,
+                            itemBuilder: (context, index) {
+                              final item = state.items[index];
+                              return ListTile(
+                                title: Text(item.product.nombre),
+                                subtitle: Text(
+                                  '\$${item.product.precioVenta.toStringAsFixed(2)} x ${item.quantity}',
+                                ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(
+                                          Icons.remove_circle_outline),
+                                      onPressed: () => _decrementQuantity(
+                                          item.product.id),
+                                    ),
+                                    Text(
+                                      '${item.quantity}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                          Icons.add_circle_outline),
+                                      onPressed: () => _incrementQuantity(
+                                          item.product.id),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                  const Divider(height: 1),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Productos:'),
+                            Text('${state.totalItems}'),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Total:',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '\$${state.subtotal.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: ElevatedButton(
+                            onPressed: state.items.isEmpty
+                                ? null
+                                : () {
+                                    Navigator.pop(context);
+                                    _onCheckout();
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.onPrimary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text(
+                              'Cobrar',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: ElevatedButton(
-                        onPressed: _cart.isEmpty
-                            ? null
-                            : () {
-                                Navigator.pop(context);
-                                _onCheckout();
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onPrimary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text(
-                          'Cobrar',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

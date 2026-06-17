@@ -13,6 +13,7 @@ import '../../features/products/data/repositories/products_repository_impl.dart'
 import '../../features/products/domain/repositories/products_repository.dart';
 import '../../features/products/presentation/bloc/search_bloc.dart';
 import '../../features/products/presentation/bloc/products_list_bloc.dart';
+import '../../features/pos/presentation/bloc/cart_bloc.dart';
 import '../../features/sync/data/sat_sync_service.dart';
 import '../../features/sync/data/catalog_sync_service.dart';
 
@@ -124,5 +125,9 @@ void _registerBlocs() {
 
   sl.registerFactory<ProductsListBloc>(
     () => ProductsListBloc(productsRepository: sl<ProductsRepository>()),
+  );
+
+  sl.registerFactory<CartBloc>(
+    () => CartBloc(),
   );
 }
