@@ -215,4 +215,12 @@ class ProductsRepositoryImpl implements ProductsRepository {
         .get();
     return rows.map(_mapToEntity).toList();
   }
+
+  @override
+  Future<void> syncProductsDelta() async {
+    // TODO: Implementar cuando el backend exponga el endpoint de delta de productos.
+    // Se esperaría recibir los productos modificados desde la última sincronización
+    // e insertar/actualizar/eliminar en la tabla local.
+    print('[CATALOG SYNC] ProductsRepository.syncProductsDelta called (stub)');
+  }
 }

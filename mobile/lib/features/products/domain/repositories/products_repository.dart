@@ -13,4 +13,5 @@ abstract class ProductsRepository {
     int limit = 20,
     int offset = 0,
   });
+  Future<void> syncProductsDelta();
 }

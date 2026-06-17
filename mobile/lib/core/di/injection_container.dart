@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config/app_config.dart';
 import '../database/app_database.dart';
@@ -13,6 +14,7 @@ import '../../features/products/domain/repositories/products_repository.dart';
 import '../../features/products/presentation/bloc/search_bloc.dart';
 import '../../features/products/presentation/bloc/products_list_bloc.dart';
 import '../../features/sync/data/sat_sync_service.dart';
+import '../../features/sync/data/catalog_sync_service.dart';
 
 final sl = GetIt.instance;
 
@@ -68,6 +70,20 @@ void _registerServices() {
       () => SatSyncService(
         dio: sl<Dio>(),
         database: sl<AppDatabase>(),
+      ),
+    );
+  }
+
+  if (!sl.isRegistered<SharedPreferences>()) {
+    sl.registerLazySingletonAsync<SharedPreferences>(
+      () => SharedPreferences.getInstance(),
+    );
+  }
+
+  if (!sl.isRegistered<CatalogSyncService>()) {
+    sl.registerLazySingletonAsync<CatalogSyncService>(
+      () async => CatalogSyncService(
+        prefs: await sl.getAsync<SharedPreferences>(),
       ),
     );
   }
