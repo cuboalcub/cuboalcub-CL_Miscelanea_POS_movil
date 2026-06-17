@@ -12,6 +12,7 @@ import 'features/auth/presentation/bloc/auth_event.dart';
 import 'features/auth/presentation/bloc/auth_state.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 import 'features/products/presentation/pages/products_page.dart';
+import 'features/sync/data/sat_sync_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,8 +64,58 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _isSyncing = false;
+
+  Future<void> _syncNow() async {
+    if (_isSyncing) return;
+
+    print('[CACHE INVALIDATION] Manual sync requested');
+    setState(() => _isSyncing = true);
+
+    try {
+      final satSyncService = sl<SatSyncService>();
+      final result = await satSyncService.syncAllSatCatalogs();
+      print('[CACHE INVALIDATION] Sync completed');
+      print('[CACHE INVALIDATION] Inserted: ${result.totalInserted}, '
+          'Updated: ${result.totalUpdated}, '
+          'Soft-deleted: ${result.totalSoftDeleted}, '
+          'Failed: ${result.totalFailed}');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Sincronización completada. '
+              '${result.totalInserted} registros actualizados.',
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      print('[CACHE INVALIDATION] Sync failed: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No fue posible sincronizar los catálogos'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSyncing = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +137,18 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text('Ver Productos'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _isSyncing ? null : _syncNow,
+              icon: _isSyncing
+                  ? const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.sync),
+              label: const Text('Sincronizar ahora'),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
