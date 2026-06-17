@@ -32,18 +32,6 @@ class CartState extends Equatable {
     this.subtotal = 0.0,
   });
 
-  CartState copyWith({
-    List<CartItem>? items,
-    int? totalItems,
-    double? subtotal,
-  }) {
-    return CartState(
-      items: items ?? this.items,
-      totalItems: totalItems ?? this.totalItems,
-      subtotal: subtotal ?? this.subtotal,
-    );
-  }
-
   @override
   List<Object?> get props => [items, totalItems, subtotal];
 }

@@ -9,6 +9,7 @@ import '../services/session_manager.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/products/data/datasources/product_api_service.dart';
 import '../../features/products/data/repositories/products_repository_impl.dart';
 import '../../features/products/domain/repositories/products_repository.dart';
 import '../../features/products/presentation/bloc/search_bloc.dart';
@@ -100,13 +101,23 @@ void _registerRepositories() {
     );
   }
 
+  if (!sl.isRegistered<ProductApiService>()) {
+    sl.registerLazySingleton<ProductApiService>(
+      () => ProductApiService(
+        dio: sl<Dio>(),
+        sessionManager: sl<SessionManager>(),
+      ),
+    );
+  }
+
   if (!sl.isRegistered<ProductsRepository>()) {
-  sl.registerLazySingleton<ProductsRepository>(
-    () => ProductsRepositoryImpl(
-      database: sl<AppDatabase>(),
-    ),
-  );
- }
+    sl.registerLazySingleton<ProductsRepository>(
+      () => ProductsRepositoryImpl(
+        database: sl<AppDatabase>(),
+        apiService: sl<ProductApiService>(),
+      ),
+    );
+  }
 }
 
 void _registerBlocs() {

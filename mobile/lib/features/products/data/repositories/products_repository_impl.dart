@@ -1,27 +1,68 @@
 import 'package:drift/drift.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/errors/logger.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/products_repository.dart';
+import '../datasources/product_api_service.dart';
 
 class ProductsRepositoryImpl implements ProductsRepository {
   final AppDatabase _database;
+  final ProductApiService _apiService;
 
-  ProductsRepositoryImpl({required AppDatabase database})
-      : _database = database;
+  List<Product> _cachedProducts = [];
+  DateTime? _lastFetchTime;
+  static const _cacheMaxAge = Duration(minutes: 5);
+
+  ProductsRepositoryImpl({
+    required AppDatabase database,
+    required ProductApiService apiService,
+  })  : _database = database,
+        _apiService = apiService;
+
+  Future<List<Product>> _fetchProductsFromApi() async {
+    if (_cachedProducts.isNotEmpty && _lastFetchTime != null) {
+      final age = DateTime.now().difference(_lastFetchTime!);
+      if (age < _cacheMaxAge) {
+        return _cachedProducts;
+      }
+    }
+
+    try {
+      final models = await _apiService.getProducts();
+      _cachedProducts = models.map((m) => m.toEntity()).toList();
+      _lastFetchTime = DateTime.now();
+      return _cachedProducts;
+    } catch (e) {
+      AppLogger.error('[PRODUCTS REPO] API fetch failed: $e');
+      if (_cachedProducts.isNotEmpty) {
+        return _cachedProducts;
+      }
+      rethrow;
+    }
+  }
+
+  void invalidateCache() {
+    _cachedProducts = [];
+    _lastFetchTime = null;
+  }
 
   @override
   Future<List<Product>> getAllProducts() async {
-    final rows = await _database.select(_database.productsTable).get();
-    return rows.map(_mapToEntity).toList();
+    return _fetchProductsFromApi();
   }
 
   @override
   Future<Product?> getProductById(String id) async {
-    final row = await (_database.select(_database.productsTable)
-          ..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
-    return row != null ? _mapToEntity(row) : null;
+    try {
+      final products = await _fetchProductsFromApi();
+      for (final p in products) {
+        if (p.id == id) return p;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
@@ -121,86 +162,58 @@ class ProductsRepositoryImpl implements ProductsRepository {
     final stopwatch = Stopwatch()..start();
     final normalizedQuery = query.trim().toLowerCase();
 
-    print('[SEARCH] query received: "$normalizedQuery"');
-
     if (normalizedQuery.isEmpty) {
       stopwatch.stop();
-      print('[SEARCH] result count: 0');
-      print('[SEARCH] duration: ${stopwatch.elapsedMilliseconds}ms');
       return [];
     }
 
-    final lowerQuery = '%$normalizedQuery%';
-    final exactQuery = normalizedQuery;
+    try {
+      final products = await _fetchProductsFromApi();
 
-    final nombreLower = CustomExpression<String>(
-      'LOWER(nombre)',
-    );
-    final codigoBarrasLower = CustomExpression<String>(
-      'LOWER(codigo_barras)',
-    );
+      final filtered = products.where((p) {
+        final nombre = p.nombre.toLowerCase();
+        final barcode = p.codigoBarras?.toLowerCase() ?? '';
+        return nombre.contains(normalizedQuery) ||
+            barcode.contains(normalizedQuery);
+      }).toList();
 
-    final rows = await (_database.select(_database.productsTable)
-          ..where(
-            (t) =>
-                nombreLower.like(lowerQuery) |
-                codigoBarrasLower.like(lowerQuery),
-          ))
-        .get();
+      filtered.sort((a, b) {
+        final aBarcode = a.codigoBarras?.toLowerCase() ?? '';
+        final bBarcode = b.codigoBarras?.toLowerCase() ?? '';
+        final aNombre = a.nombre.toLowerCase();
+        final bNombre = b.nombre.toLowerCase();
 
-    final products = rows.map(_mapToEntity).toList();
+        final aBarcodeExact = aBarcode == normalizedQuery;
+        final bBarcodeExact = bBarcode == normalizedQuery;
+        if (aBarcodeExact && !bBarcodeExact) return -1;
+        if (!aBarcodeExact && bBarcodeExact) return 1;
 
-    products.sort((a, b) {
-      final aBarcode = a.codigoBarras?.toLowerCase() ?? '';
-      final bBarcode = b.codigoBarras?.toLowerCase() ?? '';
-      final aNombre = a.nombre.toLowerCase();
-      final bNombre = b.nombre.toLowerCase();
+        final aNombreExact = aNombre == normalizedQuery;
+        final bNombreExact = bNombre == normalizedQuery;
+        if (aNombreExact && !bNombreExact) return -1;
+        if (!aNombreExact && bNombreExact) return 1;
 
-      final aBarcodeExact = aBarcode == exactQuery;
-      final bBarcodeExact = bBarcode == exactQuery;
-      if (aBarcodeExact && !bBarcodeExact) return -1;
-      if (!aBarcodeExact && bBarcodeExact) return 1;
+        final aBarcodeStarts = aBarcode.startsWith(normalizedQuery);
+        final bBarcodeStarts = bBarcode.startsWith(normalizedQuery);
+        if (aBarcodeStarts && !bBarcodeStarts) return -1;
+        if (!aBarcodeStarts && bBarcodeStarts) return 1;
 
-      final aNombreExact = aNombre == exactQuery;
-      final bNombreExact = bNombre == exactQuery;
-      if (aNombreExact && !bNombreExact) return -1;
-      if (!aNombreExact && bNombreExact) return 1;
+        final aNombreStarts = aNombre.startsWith(normalizedQuery);
+        final bNombreStarts = bNombre.startsWith(normalizedQuery);
+        if (aNombreStarts && !bNombreStarts) return -1;
+        if (!aNombreStarts && bNombreStarts) return 1;
 
-      final aBarcodeStarts = aBarcode.startsWith(exactQuery);
-      final bBarcodeStarts = bBarcode.startsWith(exactQuery);
-      if (aBarcodeStarts && !bBarcodeStarts) return -1;
-      if (!aBarcodeStarts && bBarcodeStarts) return 1;
+        return aNombre.compareTo(bNombre);
+      });
 
-      final aNombreStarts = aNombre.startsWith(exactQuery);
-      final bNombreStarts = bNombre.startsWith(exactQuery);
-      if (aNombreStarts && !bNombreStarts) return -1;
-      if (!aNombreStarts && bNombreStarts) return 1;
-
-      return aNombre.compareTo(bNombre);
-    });
-
-    String matchType = 'contains';
-    if (products.isNotEmpty) {
-      final first = products.first;
-      final firstBarcode = first.codigoBarras?.toLowerCase() ?? '';
-      final firstNombre = first.nombre.toLowerCase();
-      if (firstBarcode == exactQuery) {
-        matchType = 'barcode_exact';
-      } else if (firstNombre == exactQuery) {
-        matchType = 'name_exact';
-      } else if (firstBarcode.startsWith(exactQuery)) {
-        matchType = 'barcode_prefix';
-      } else if (firstNombre.startsWith(exactQuery)) {
-        matchType = 'name_prefix';
-      }
+      stopwatch.stop();
+      AppLogger.debug('[PRODUCTS REPO] searchProducts: ${filtered.length} results in ${stopwatch.elapsedMilliseconds}ms');
+      return filtered;
+    } catch (e) {
+      stopwatch.stop();
+      AppLogger.error('[PRODUCTS REPO] searchProducts failed: $e');
+      rethrow;
     }
-
-    stopwatch.stop();
-    print('[SEARCH] result count: ${products.length}');
-    print('[SEARCH] match type: $matchType');
-    print('[SEARCH] duration: ${stopwatch.elapsedMilliseconds}ms');
-
-    return products;
   }
 
   @override
@@ -208,19 +221,24 @@ class ProductsRepositoryImpl implements ProductsRepository {
     int limit = 20,
     int offset = 0,
   }) async {
-    final rows = await (_database.select(_database.productsTable)
-          ..where((t) => t.activo.equals(true))
-          ..orderBy([(t) => OrderingTerm.asc(t.nombre)])
-          ..limit(limit, offset: offset))
-        .get();
-    return rows.map(_mapToEntity).toList();
+    try {
+      final allProducts = await _fetchProductsFromApi();
+      final activeProducts = allProducts.where((p) => p.activo).toList();
+      activeProducts.sort((a, b) => a.nombre.compareTo(b.nombre));
+
+      final start = offset.clamp(0, activeProducts.length);
+      final end = (start + limit).clamp(0, activeProducts.length);
+
+      if (start >= activeProducts.length) return [];
+      return activeProducts.sublist(start, end);
+    } catch (e) {
+      AppLogger.error('[PRODUCTS REPO] getProducts failed: $e');
+      rethrow;
+    }
   }
 
   @override
   Future<void> syncProductsDelta() async {
-    // TODO: Implementar cuando el backend exponga el endpoint de delta de productos.
-    // Se esperaría recibir los productos modificados desde la última sincronización
-    // e insertar/actualizar/eliminar en la tabla local.
-    print('[CATALOG SYNC] ProductsRepository.syncProductsDelta called (stub)');
+    invalidateCache();
   }
 }

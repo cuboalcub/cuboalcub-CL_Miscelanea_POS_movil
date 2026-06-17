@@ -11,7 +11,10 @@ import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/bloc/auth_event.dart';
 import 'features/auth/presentation/bloc/auth_state.dart';
 import 'features/auth/presentation/pages/login_page.dart';
+import 'features/products/presentation/bloc/products_list_bloc.dart';
+import 'features/products/presentation/bloc/search_bloc.dart';
 import 'features/products/presentation/pages/products_page.dart';
+import 'features/pos/presentation/bloc/cart_bloc.dart';
 import 'features/pos/presentation/pages/pos_page.dart';
 import 'features/sync/data/sat_sync_service.dart';
 
@@ -134,7 +137,22 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const POSPage()),
+                  MaterialPageRoute(
+                    builder: (_) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider<ProductsListBloc>(
+                          create: (_) => sl<ProductsListBloc>(),
+                        ),
+                        BlocProvider<SearchBloc>(
+                          create: (_) => sl<SearchBloc>(),
+                        ),
+                        BlocProvider<CartBloc>(
+                          create: (_) => sl<CartBloc>(),
+                        ),
+                      ],
+                      child: const POSPage(),
+                    ),
+                  ),
                 );
               },
               icon: const Icon(Icons.point_of_sale),

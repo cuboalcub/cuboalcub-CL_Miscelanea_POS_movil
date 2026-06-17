@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/di/injection_container.dart';
 import '../../../products/domain/entities/product.dart';
+import '../../../products/presentation/bloc/products_list_bloc.dart';
+import '../../../products/presentation/bloc/products_list_event.dart';
+import '../../../products/presentation/bloc/products_list_state.dart';
 import '../../../products/presentation/bloc/search_bloc.dart';
 import '../../../products/presentation/bloc/search_event.dart';
 import '../../../products/presentation/bloc/search_state.dart';
@@ -22,6 +24,14 @@ class _POSPageState extends State<POSPage> {
   String _currentQuery = '';
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductsListBloc>().add(const ProductsListStarted());
+    });
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -30,8 +40,11 @@ class _POSPageState extends State<POSPage> {
   void _onSearchChanged(String value) {
     final query = value.trim();
     _currentQuery = query;
-    print('[POS UI] Dispatching SearchQueryChanged');
-    context.read<SearchBloc>().add(SearchQueryChanged(query: value));
+    if (query.isEmpty) {
+      context.read<SearchBloc>().add(const SearchCleared());
+    } else {
+      context.read<SearchBloc>().add(SearchQueryChanged(query: value));
+    }
   }
 
   void _onSearchCleared() {
@@ -41,7 +54,6 @@ class _POSPageState extends State<POSPage> {
   }
 
   void _addToCart(Product product) {
-    print('[POS UI] Adding to cart: ${product.nombre}');
     context.read<CartBloc>().add(CartProductAdded(product: product));
   }
 
@@ -54,7 +66,6 @@ class _POSPageState extends State<POSPage> {
   }
 
   void _onCheckout() {
-    print('[POS UI] Checkout tapped');
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Funcionalidad pendiente'),
@@ -77,73 +88,100 @@ class _POSPageState extends State<POSPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('[POS UI] POSPage build called');
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) {
-            print('[POS UI] SearchBloc create called');
-            return sl<SearchBloc>();
-          },
-        ),
-        BlocProvider(
-          create: (_) {
-            print('[POS UI] CartBloc create called');
-            return sl<CartBloc>();
-          },
-        ),
-      ],
-      child: Builder(
-        builder: (context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Punto de Venta'),
-            ),
-            body: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      labelText: 'Buscar producto',
-                      prefixIcon: const Icon(Icons.search),
-                      border: const OutlineInputBorder(),
-                      suffixIcon: _currentQuery.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: _onSearchCleared,
-                            )
-                          : null,
-                    ),
-                    onChanged: _onSearchChanged,
-                  ),
-                ),
-                Expanded(
-                  child: _currentQuery.isEmpty
-                      ? _buildEmptySearch()
-                      : _buildSearchResults(),
-                ),
-              ],
-            ),
-            bottomNavigationBar: _buildCartSummaryBar(),
-          );
-        },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Punto de Venta'),
       ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                labelText: 'Buscar producto',
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
+                suffixIcon: _currentQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: _onSearchCleared,
+                      )
+                    : null,
+              ),
+              onChanged: _onSearchChanged,
+            ),
+          ),
+          Expanded(
+            child: _currentQuery.isEmpty
+                ? _buildProductList()
+                : _buildSearchResults(),
+          ),
+        ],
+      ),
+      bottomNavigationBar: _buildCartSummaryBar(),
     );
   }
 
-  Widget _buildEmptySearch() {
-    return const Center(
-      child: Text('Busca un producto para agregar al carrito'),
+  Widget _buildProductList() {
+    return BlocBuilder<ProductsListBloc, ProductsListState>(
+      builder: (context, state) {
+        if (state is ProductsListLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is ProductsListError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                const SizedBox(height: 16),
+                Text(
+                  'Error: ${state.message}',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<ProductsListBloc>().add(const ProductsListRefresh());
+                  },
+                  child: const Text('Reintentar'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (state is ProductsListLoaded) {
+          if (state.products.isEmpty) {
+            return const Center(
+              child: Text('No hay productos disponibles'),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<ProductsListBloc>().add(const ProductsListRefresh());
+            },
+            child: ListView.builder(
+              itemCount: state.products.length,
+              itemBuilder: (context, index) {
+                final product = state.products[index];
+                return _buildProductTile(product);
+              },
+            ),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 
   Widget _buildSearchResults() {
     return BlocBuilder<SearchBloc, SearchState>(
       builder: (context, state) {
-        print('[POS UI] State changed: ${state.runtimeType}');
-
         if (state is SearchInitial) {
           return const Center(
             child: Text('Escribe para buscar productos'),
@@ -169,29 +207,33 @@ class _POSPageState extends State<POSPage> {
             itemCount: state.products.length,
             itemBuilder: (context, index) {
               final product = state.products[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: ListTile(
-                  title: Text(
-                    product.nombre,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  subtitle: Text(
-                    '\$${product.precioVenta.toStringAsFixed(2)}',
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.add_shopping_cart),
-                    onPressed: () => _addToCart(product),
-                  ),
-                  onTap: () => _addToCart(product),
-                ),
-              );
+              return _buildProductTile(product);
             },
           );
         }
 
         return const SizedBox.shrink();
       },
+    );
+  }
+
+  Widget _buildProductTile(Product product) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: ListTile(
+        title: Text(
+          product.nombre,
+          style: const TextStyle(fontWeight: FontWeight.w500),
+        ),
+        subtitle: Text(
+          '\$${product.precioVenta.toStringAsFixed(2)}',
+        ),
+        trailing: IconButton(
+          icon: const Icon(Icons.add_shopping_cart),
+          onPressed: () => _addToCart(product),
+        ),
+        onTap: () => _addToCart(product),
+      ),
     );
   }
 
@@ -276,6 +318,10 @@ class _POSPageState extends State<POSPage> {
     );
   }
 
+  void _removeFromCart(String productId) {
+    context.read<CartBloc>().add(CartProductRemoved(productId: productId));
+  }
+
   Widget _buildCartBottomSheet(BuildContext context) {
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
@@ -332,34 +378,82 @@ class _POSPageState extends State<POSPage> {
                             itemCount: state.items.length,
                             itemBuilder: (context, index) {
                               final item = state.items[index];
-                              return ListTile(
-                                title: Text(item.product.nombre),
-                                subtitle: Text(
-                                  '\$${item.product.precioVenta.toStringAsFixed(2)} x ${item.quantity}',
+                              return Dismissible(
+                                key: ValueKey(item.product.id),
+                                direction: DismissDirection.endToStart,
+                                background: Container(
+                                  alignment: Alignment.centerRight,
+                                  padding: const EdgeInsets.only(right: 20),
+                                  color: Colors.red,
+                                  child: const Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(
-                                          Icons.remove_circle_outline),
-                                      onPressed: () => _decrementQuantity(
-                                          item.product.id),
+                                confirmDismiss: (_) async {
+                                  return await showDialog<bool>(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: const Text('Eliminar producto'),
+                                      content: Text(
+                                          '¿Eliminar "${item.product.nombre}" del carrito?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(ctx, false),
+                                          child: const Text('Cancelar'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(ctx, true),
+                                          child: const Text('Eliminar',
+                                              style:
+                                                  TextStyle(color: Colors.red)),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      '${item.quantity}',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
+                                  );
+                                },
+                                onDismissed: (_) {
+                                  _removeFromCart(item.product.id);
+                                },
+                                child: ListTile(
+                                  title: Text(item.product.nombre),
+                                  subtitle: Text(
+                                    '\$${item.product.precioVenta.toStringAsFixed(2)} x ${item.quantity}',
+                                  ),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                            Icons.remove_circle_outline),
+                                        onPressed: () => _decrementQuantity(
+                                            item.product.id),
                                       ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(
-                                          Icons.add_circle_outline),
-                                      onPressed: () => _incrementQuantity(
-                                          item.product.id),
-                                    ),
-                                  ],
+                                      Text(
+                                        '${item.quantity}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                            Icons.add_circle_outline),
+                                        onPressed: () => _incrementQuantity(
+                                            item.product.id),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete_outline,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () =>
+                                            _removeFromCart(item.product.id),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },
