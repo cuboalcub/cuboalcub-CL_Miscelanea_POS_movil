@@ -7,6 +7,7 @@ import 'package:mobile/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mobile/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mobile/features/auth/presentation/bloc/auth_event.dart';
 import 'package:mobile/features/auth/presentation/pages/login_page.dart';
+import 'package:mobile/features/sync/data/sat_sync_service.dart';
 
 class _MockAuthRepository implements AuthRepository {
   @override
@@ -21,9 +22,26 @@ class _MockAuthRepository implements AuthRepository {
   Future<AuthResult?> getCurrentUser() async => null;
 }
 
+class _MockSatSyncService implements SatSyncService {
+  @override
+  Future<SatSyncResult> syncAllSatCatalogs() async {
+    return const SatSyncResult(
+      totalInserted: 0,
+      totalUpdated: 0,
+      totalSoftDeleted: 0,
+      totalFailed: 0,
+      duration: Duration.zero,
+      perCatalogStats: [],
+    );
+  }
+}
+
 void main() {
   testWidgets('LoginPage is displayed when unauthenticated', (tester) async {
-    final authBloc = AuthBloc(authRepository: _MockAuthRepository());
+    final authBloc = AuthBloc(
+      authRepository: _MockAuthRepository(),
+      satSyncService: _MockSatSyncService(),
+    );
     authBloc.add(const AppStarted());
 
     await tester.pumpWidget(

@@ -8,9 +8,9 @@ import '../services/session_manager.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
-
 import '../../features/products/data/repositories/products_repository_impl.dart';
 import '../../features/products/domain/repositories/products_repository.dart';
+import '../../features/sync/data/sat_sync_service.dart';
 
 final sl = GetIt.instance;
 
@@ -60,6 +60,15 @@ void _registerServices() {
       () => SessionManager(),
     );
   }
+
+  if (!sl.isRegistered<SatSyncService>()) {
+    sl.registerLazySingleton<SatSyncService>(
+      () => SatSyncService(
+        dio: sl<Dio>(),
+        database: sl<AppDatabase>(),
+      ),
+    );
+  }
 }
 
 void _registerRepositories() {
@@ -84,7 +93,10 @@ void _registerRepositories() {
 void _registerBlocs() {
   if (!sl.isRegistered<AuthBloc>()) {
     sl.registerLazySingleton<AuthBloc>(
-      () => AuthBloc(authRepository: sl<AuthRepository>()),
+      () => AuthBloc(
+        authRepository: sl<AuthRepository>(),
+        satSyncService: sl<SatSyncService>(),
+      ),
     );
   }
 }

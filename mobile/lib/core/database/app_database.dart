@@ -26,6 +26,39 @@ class AppDatabase extends _$AppDatabase {
           }
         },
       );
+
+  Future<int> upsertSATCatalogItem(SATCatalogItemTableCompanion item) {
+    return into(sATCatalogItemTable).insertOnConflictUpdate(item);
+  }
+
+  Future<void> upsertSATCatalogItems(List<SATCatalogItemTableCompanion> items) {
+    return transaction(() async {
+      for (final item in items) {
+        await into(sATCatalogItemTable).insertOnConflictUpdate(item);
+      }
+    });
+  }
+
+  Future<int> softDeleteSATItemsByTypeExceptCodes(String type, List<String> activeCodes) {
+    final now = DateTime.now();
+
+    return (update(sATCatalogItemTable)
+          ..where((t) => t.type.equals(type) & t.deletedAt.isNull())
+          ..where((t) => t.code.isNotIn(activeCodes)))
+        .write(
+      SATCatalogItemTableCompanion(
+        deletedAt: Value(now),
+        synced: const Value(true),
+      ),
+    );
+  }
+
+  Future<List<String>> getActiveCodesByType(String type) async {
+    final query = select(sATCatalogItemTable)
+      ..where((t) => t.type.equals(type) & t.deletedAt.isNull());
+    final rows = await query.get();
+    return rows.map((r) => r.code).toList();
+  }
 }
 
 LazyDatabase _openConnection() {
