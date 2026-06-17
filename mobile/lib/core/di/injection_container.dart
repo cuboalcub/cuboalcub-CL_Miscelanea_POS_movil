@@ -10,6 +10,7 @@ import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/products/data/repositories/products_repository_impl.dart';
 import '../../features/products/domain/repositories/products_repository.dart';
+import '../../features/products/presentation/bloc/search_bloc.dart';
 import '../../features/sync/data/sat_sync_service.dart';
 
 final sl = GetIt.instance;
@@ -99,4 +100,8 @@ void _registerBlocs() {
       ),
     );
   }
+
+  sl.registerFactory<SearchBloc>(
+    () => SearchBloc(productsRepository: sl<ProductsRepository>()),
+  );
 }

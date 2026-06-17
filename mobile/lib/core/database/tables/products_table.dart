@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
 
+@TableIndex(name: 'products_nombre', columns: {#nombre})
+@TableIndex(name: 'products_codigo_barras', columns: {#codigoBarras})
 class ProductsTable extends Table {
   TextColumn get id => text()();
   TextColumn? get sku => text().nullable()();
