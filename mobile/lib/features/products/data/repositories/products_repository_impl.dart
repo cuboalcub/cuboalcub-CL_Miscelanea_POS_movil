@@ -202,4 +202,17 @@ class ProductsRepositoryImpl implements ProductsRepository {
 
     return products;
   }
+
+  @override
+  Future<List<Product>> getProducts({
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    final rows = await (_database.select(_database.productsTable)
+          ..where((t) => t.activo.equals(true))
+          ..orderBy([(t) => OrderingTerm.asc(t.nombre)])
+          ..limit(limit, offset: offset))
+        .get();
+    return rows.map(_mapToEntity).toList();
+  }
 }

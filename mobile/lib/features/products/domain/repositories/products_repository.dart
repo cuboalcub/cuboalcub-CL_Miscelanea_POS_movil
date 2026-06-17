@@ -9,4 +9,8 @@ abstract class ProductsRepository {
   Future<List<Product>> getPendingSyncProducts();
   Future<void> markAsSynced(String id);
   Future<List<Product>> searchProducts(String query);
+  Future<List<Product>> getProducts({
+    int limit = 20,
+    int offset = 0,
+  });
 }
