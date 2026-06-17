@@ -27,7 +27,7 @@ class AppConfig {
         return const AppConfig(
           environment: AppEnvironment.production,
           appName: 'Tiendita POS',
-          apiBaseUrl: 'https://api.tiendita.com',
+          apiBaseUrl: 'https://cl-miscelanea-pos-back-0t5q.onrender.com',
           supabaseUrl: 'https://supabase.tiendita.com',
           enableDebugLogging: false,
         );
@@ -35,7 +35,7 @@ class AppConfig {
         return const AppConfig(
           environment: AppEnvironment.development,
           appName: 'Tiendita POS (Dev)',
-          apiBaseUrl: 'https://dev-api.tiendita.com',
+          apiBaseUrl: 'https://cl-miscelanea-pos-back-0t5q.onrender.com',
           supabaseUrl: 'https://dev-supabase.tiendita.com',
           enableDebugLogging: true,
         );

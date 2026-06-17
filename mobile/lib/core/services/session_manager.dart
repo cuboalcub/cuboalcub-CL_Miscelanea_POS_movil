@@ -1,27 +1,21 @@
+import '../../features/auth/domain/entities/auth_result.dart';
+
 class SessionManager {
-  String? _token;
-  String? _userId;
-  String? _email;
+  AuthResult? _session;
 
-  String? get token => _token;
-  String? get userId => _userId;
-  String? get email => _email;
+  AuthResult? get session => _session;
 
-  bool get isLoggedIn => _token != null;
+  bool get isLoggedIn => _session?.token != null;
 
-  void saveSession({
-    required String token,
-    required String userId,
-    required String email,
-  }) {
-    _token = token;
-    _userId = userId;
-    _email = email;
+  Future<void> saveSession(AuthResult session) async {
+    _session = session;
   }
 
-  void clearSession() {
-    _token = null;
-    _userId = null;
-    _email = null;
+  Future<AuthResult?> getSession() async {
+    return _session;
+  }
+
+  Future<void> clearSession() async {
+    _session = null;
   }
 }

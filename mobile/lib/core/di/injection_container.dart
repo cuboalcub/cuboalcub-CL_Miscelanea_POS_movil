@@ -2,10 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
 import '../config/app_config.dart';
-
 import '../database/app_database.dart';
-
-import '../../features/auth/data/datasources/session_manager.dart';
+import '../network/dio_logging_interceptor.dart';
+import '../services/session_manager.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
@@ -34,7 +33,7 @@ void _registerCore() {
   if (!sl.isRegistered<Dio>()) {
     sl.registerLazySingleton<Dio>(() {
       final config = sl<AppConfig>();
-      return Dio(BaseOptions(
+      final dio = Dio(BaseOptions(
         baseUrl: config.apiBaseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
@@ -43,6 +42,8 @@ void _registerCore() {
           'Accept': 'application/json',
         },
       ));
+      dio.interceptors.add(DioLoggingInterceptor());
+      return dio;
     });
   }
 }
@@ -72,13 +73,12 @@ void _registerRepositories() {
   }
 
   if (!sl.isRegistered<ProductsRepository>()) {
-    sl.registerLazySingleton<ProductsRepository>(
-      () => ProductsRepositoryImpl(
-        database: sl<AppDatabase>(),
-        dio: sl<Dio>(), // 👈 importante para sync futuro
-      ),
-    );
-  }
+  sl.registerLazySingleton<ProductsRepository>(
+    () => ProductsRepositoryImpl(
+      database: sl<AppDatabase>(),
+    ),
+  );
+ }
 }
 
 void _registerBlocs() {

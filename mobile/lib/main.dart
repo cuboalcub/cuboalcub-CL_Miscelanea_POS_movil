@@ -1,19 +1,31 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/bloc/app_bloc_observer.dart';
 import 'core/config/app_config.dart';
+import 'core/database/app_database.dart';
+import 'core/database/debug/sat_db_debug_helper.dart';
 import 'core/di/injection_container.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/bloc/auth_event.dart';
 import 'features/auth/presentation/bloc/auth_state.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final appConfig = AppConfig.fromEnvironment();
+
   setupDependencies(appConfig);
+
   Bloc.observer = AppBlocObserver();
+
+  /// 🔥 SAT DRIFT DEBUG (solo en desarrollo)
+  if (kDebugMode) {
+    final db = sl<AppDatabase>();
+    await debugSatDatabase(db);
+  }
 
   runApp(
     BlocProvider.value(
@@ -22,6 +34,7 @@ void main() {
     ),
   );
 
+  /// Evento inicial de auth
   sl<AuthBloc>().add(const AppStarted());
 }
 

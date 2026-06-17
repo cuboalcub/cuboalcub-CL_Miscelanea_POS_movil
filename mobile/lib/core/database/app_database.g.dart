@@ -940,15 +940,544 @@ class ProductsTableCompanion extends UpdateCompanion<ProductsTableData> {
   }
 }
 
+class $SATCatalogItemTableTable extends SATCatalogItemTable
+    with TableInfo<$SATCatalogItemTableTable, SATCatalogItemTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SATCatalogItemTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _extraJsonMeta = const VerificationMeta(
+    'extraJson',
+  );
+  @override
+  late final GeneratedColumn<String> extraJson = GeneratedColumn<String>(
+    'extra_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncedMeta = const VerificationMeta('synced');
+  @override
+  late final GeneratedColumn<bool> synced = GeneratedColumn<bool>(
+    'synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    type,
+    code,
+    description,
+    extraJson,
+    updatedAt,
+    deletedAt,
+    synced,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 's_a_t_catalog_item_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SATCatalogItemTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_codeMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('extra_json')) {
+      context.handle(
+        _extraJsonMeta,
+        extraJson.isAcceptableOrUnknown(data['extra_json']!, _extraJsonMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('synced')) {
+      context.handle(
+        _syncedMeta,
+        synced.isAcceptableOrUnknown(data['synced']!, _syncedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SATCatalogItemTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SATCatalogItemTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      extraJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}extra_json'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      synced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}synced'],
+      )!,
+    );
+  }
+
+  @override
+  $SATCatalogItemTableTable createAlias(String alias) {
+    return $SATCatalogItemTableTable(attachedDatabase, alias);
+  }
+}
+
+class SATCatalogItemTableData extends DataClass
+    implements Insertable<SATCatalogItemTableData> {
+  final String id;
+  final String type;
+  final String code;
+  final String description;
+  final String? extraJson;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final bool synced;
+  const SATCatalogItemTableData({
+    required this.id,
+    required this.type,
+    required this.code,
+    required this.description,
+    this.extraJson,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.synced,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['type'] = Variable<String>(type);
+    map['code'] = Variable<String>(code);
+    map['description'] = Variable<String>(description);
+    if (!nullToAbsent || extraJson != null) {
+      map['extra_json'] = Variable<String>(extraJson);
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['synced'] = Variable<bool>(synced);
+    return map;
+  }
+
+  SATCatalogItemTableCompanion toCompanion(bool nullToAbsent) {
+    return SATCatalogItemTableCompanion(
+      id: Value(id),
+      type: Value(type),
+      code: Value(code),
+      description: Value(description),
+      extraJson: extraJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(extraJson),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      synced: Value(synced),
+    );
+  }
+
+  factory SATCatalogItemTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SATCatalogItemTableData(
+      id: serializer.fromJson<String>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      code: serializer.fromJson<String>(json['code']),
+      description: serializer.fromJson<String>(json['description']),
+      extraJson: serializer.fromJson<String?>(json['extraJson']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      synced: serializer.fromJson<bool>(json['synced']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'type': serializer.toJson<String>(type),
+      'code': serializer.toJson<String>(code),
+      'description': serializer.toJson<String>(description),
+      'extraJson': serializer.toJson<String?>(extraJson),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'synced': serializer.toJson<bool>(synced),
+    };
+  }
+
+  SATCatalogItemTableData copyWith({
+    String? id,
+    String? type,
+    String? code,
+    String? description,
+    Value<String?> extraJson = const Value.absent(),
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    bool? synced,
+  }) => SATCatalogItemTableData(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    code: code ?? this.code,
+    description: description ?? this.description,
+    extraJson: extraJson.present ? extraJson.value : this.extraJson,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    synced: synced ?? this.synced,
+  );
+  SATCatalogItemTableData copyWithCompanion(SATCatalogItemTableCompanion data) {
+    return SATCatalogItemTableData(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      code: data.code.present ? data.code.value : this.code,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      extraJson: data.extraJson.present ? data.extraJson.value : this.extraJson,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      synced: data.synced.present ? data.synced.value : this.synced,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SATCatalogItemTableData(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('code: $code, ')
+          ..write('description: $description, ')
+          ..write('extraJson: $extraJson, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('synced: $synced')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    type,
+    code,
+    description,
+    extraJson,
+    updatedAt,
+    deletedAt,
+    synced,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SATCatalogItemTableData &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.code == this.code &&
+          other.description == this.description &&
+          other.extraJson == this.extraJson &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.synced == this.synced);
+}
+
+class SATCatalogItemTableCompanion
+    extends UpdateCompanion<SATCatalogItemTableData> {
+  final Value<String> id;
+  final Value<String> type;
+  final Value<String> code;
+  final Value<String> description;
+  final Value<String?> extraJson;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<bool> synced;
+  final Value<int> rowid;
+  const SATCatalogItemTableCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.code = const Value.absent(),
+    this.description = const Value.absent(),
+    this.extraJson = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.synced = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SATCatalogItemTableCompanion.insert({
+    required String id,
+    required String type,
+    required String code,
+    required String description,
+    this.extraJson = const Value.absent(),
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.synced = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       type = Value(type),
+       code = Value(code),
+       description = Value(description),
+       updatedAt = Value(updatedAt);
+  static Insertable<SATCatalogItemTableData> custom({
+    Expression<String>? id,
+    Expression<String>? type,
+    Expression<String>? code,
+    Expression<String>? description,
+    Expression<String>? extraJson,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<bool>? synced,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (code != null) 'code': code,
+      if (description != null) 'description': description,
+      if (extraJson != null) 'extra_json': extraJson,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (synced != null) 'synced': synced,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SATCatalogItemTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? type,
+    Value<String>? code,
+    Value<String>? description,
+    Value<String?>? extraJson,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<bool>? synced,
+    Value<int>? rowid,
+  }) {
+    return SATCatalogItemTableCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      code: code ?? this.code,
+      description: description ?? this.description,
+      extraJson: extraJson ?? this.extraJson,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      synced: synced ?? this.synced,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (extraJson.present) {
+      map['extra_json'] = Variable<String>(extraJson.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (synced.present) {
+      map['synced'] = Variable<bool>(synced.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SATCatalogItemTableCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('code: $code, ')
+          ..write('description: $description, ')
+          ..write('extraJson: $extraJson, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('synced: $synced, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ProductsTableTable productsTable = $ProductsTableTable(this);
+  late final $SATCatalogItemTableTable sATCatalogItemTable =
+      $SATCatalogItemTableTable(this);
+  late final Index satCatalogItemTypeDesc = Index(
+    'sat_catalog_item_type_desc',
+    'CREATE INDEX sat_catalog_item_type_desc ON s_a_t_catalog_item_table (type, description)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [productsTable];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    productsTable,
+    sATCatalogItemTable,
+    satCatalogItemTypeDesc,
+  ];
 }
 
 typedef $$ProductsTableTableCreateCompanionBuilder =
@@ -1378,10 +1907,287 @@ typedef $$ProductsTableTableProcessedTableManager =
       ProductsTableData,
       PrefetchHooks Function()
     >;
+typedef $$SATCatalogItemTableTableCreateCompanionBuilder =
+    SATCatalogItemTableCompanion Function({
+      required String id,
+      required String type,
+      required String code,
+      required String description,
+      Value<String?> extraJson,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<bool> synced,
+      Value<int> rowid,
+    });
+typedef $$SATCatalogItemTableTableUpdateCompanionBuilder =
+    SATCatalogItemTableCompanion Function({
+      Value<String> id,
+      Value<String> type,
+      Value<String> code,
+      Value<String> description,
+      Value<String?> extraJson,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<bool> synced,
+      Value<int> rowid,
+    });
+
+class $$SATCatalogItemTableTableFilterComposer
+    extends Composer<_$AppDatabase, $SATCatalogItemTableTable> {
+  $$SATCatalogItemTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get extraJson => $composableBuilder(
+    column: $table.extraJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SATCatalogItemTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $SATCatalogItemTableTable> {
+  $$SATCatalogItemTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get extraJson => $composableBuilder(
+    column: $table.extraJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SATCatalogItemTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SATCatalogItemTableTable> {
+  $$SATCatalogItemTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get extraJson =>
+      $composableBuilder(column: $table.extraJson, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get synced =>
+      $composableBuilder(column: $table.synced, builder: (column) => column);
+}
+
+class $$SATCatalogItemTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SATCatalogItemTableTable,
+          SATCatalogItemTableData,
+          $$SATCatalogItemTableTableFilterComposer,
+          $$SATCatalogItemTableTableOrderingComposer,
+          $$SATCatalogItemTableTableAnnotationComposer,
+          $$SATCatalogItemTableTableCreateCompanionBuilder,
+          $$SATCatalogItemTableTableUpdateCompanionBuilder,
+          (
+            SATCatalogItemTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $SATCatalogItemTableTable,
+              SATCatalogItemTableData
+            >,
+          ),
+          SATCatalogItemTableData,
+          PrefetchHooks Function()
+        > {
+  $$SATCatalogItemTableTableTableManager(
+    _$AppDatabase db,
+    $SATCatalogItemTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SATCatalogItemTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SATCatalogItemTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SATCatalogItemTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> code = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String?> extraJson = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SATCatalogItemTableCompanion(
+                id: id,
+                type: type,
+                code: code,
+                description: description,
+                extraJson: extraJson,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                synced: synced,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String type,
+                required String code,
+                required String description,
+                Value<String?> extraJson = const Value.absent(),
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SATCatalogItemTableCompanion.insert(
+                id: id,
+                type: type,
+                code: code,
+                description: description,
+                extraJson: extraJson,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                synced: synced,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SATCatalogItemTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SATCatalogItemTableTable,
+      SATCatalogItemTableData,
+      $$SATCatalogItemTableTableFilterComposer,
+      $$SATCatalogItemTableTableOrderingComposer,
+      $$SATCatalogItemTableTableAnnotationComposer,
+      $$SATCatalogItemTableTableCreateCompanionBuilder,
+      $$SATCatalogItemTableTableUpdateCompanionBuilder,
+      (
+        SATCatalogItemTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $SATCatalogItemTableTable,
+          SATCatalogItemTableData
+        >,
+      ),
+      SATCatalogItemTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
   $$ProductsTableTableTableManager get productsTable =>
       $$ProductsTableTableTableManager(_db, _db.productsTable);
+  $$SATCatalogItemTableTableTableManager get sATCatalogItemTable =>
+      $$SATCatalogItemTableTableTableManager(_db, _db.sATCatalogItemTable);
 }

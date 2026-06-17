@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:dio/dio.dart';
 
 import '../../../../core/errors/exceptions.dart';
@@ -7,7 +9,6 @@ import '../../../../core/services/session_manager.dart';
 import '../../domain/entities/auth_result.dart';
 import '../../domain/repositories/auth_repository.dart';
 
-import '../models/login_request.dart';
 import '../models/login_response.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -20,15 +21,55 @@ class AuthRepositoryImpl implements AuthRepository {
   })  : _dio = dio,
         _sessionManager = sessionManager;
 
+  /// Temporary debug method — raw Dio call with no abstractions.
+  /// Bypasses repository, bloc, session manager, error mappers.
+  Future<void> debugLoginRaw(String email, String password) async {
+    final url = '${_dio.options.baseUrl}/auth/login';
+    final payload = {'email': email, 'password': password};
+
+    print('═══════════════════════════════════════════');
+    print('DEBUG LOGIN RAW');
+    print('URL: $url');
+    print('PAYLOAD: $payload');
+    print('═══════════════════════════════════════════');
+
+    try {
+      final response = await _dio.post('/auth/login', data: payload);
+
+      print('═══════════════════════════════════════════');
+      print('STATUS: ${response.statusCode}');
+      print('HEADERS: ${response.headers}');
+      print('BODY: ${response.data}');
+      print('═══════════════════════════════════════════');
+    } on DioException catch (e) {
+      print('═══════════════════════════════════════════');
+      print('DIO EXCEPTION');
+      print('TYPE: ${e.type}');
+      print('STATUS: ${e.response?.statusCode}');
+      print('BODY: ${e.response?.data}');
+      print('MESSAGE: ${e.message}');
+      print('═══════════════════════════════════════════');
+    } catch (e, st) {
+      print('═══════════════════════════════════════════');
+      print('UNEXPECTED ERROR: $e');
+      print('STACK: $st');
+      print('═══════════════════════════════════════════');
+    }
+  }
+
   @override
   Future<AuthResult> login(String email, String password) async {
     try {
-      final request = LoginRequest(email: email, password: password);
+      final url = '${_dio.options.baseUrl}/auth/login';
+      final payload = {'email': email, 'password': password};
 
-      final response = await _dio.post(
-        '/auth/login',
-        data: request.toJson(),
-      );
+      AppLogger.info('[AUTH] Resolved URL: $url');
+      AppLogger.debug('[AUTH] Payload: $payload');
+
+      final response = await _dio.post('/auth/login', data: payload);
+
+      AppLogger.info('[AUTH] Response status: ${response.statusCode}');
+      AppLogger.info('[AUTH] Response body: ${response.data}');
 
       final loginResponse = LoginResponse.fromJson(response.data);
 
@@ -40,9 +81,13 @@ class AuthRepositoryImpl implements AuthRepository {
 
       await _sessionManager.saveSession(authResult);
 
+      AppLogger.info('[AUTH] Login successful for: $email');
+
       return authResult;
     } on DioException catch (e) {
-      AppLogger.error('Login network error', error: e);
+      AppLogger.error('[AUTH] DioException — Status: ${e.response?.statusCode}, URL: ${e.requestOptions.baseUrl}${e.requestOptions.path}');
+      AppLogger.error('[AUTH] Response body: ${e.response?.data}');
+      AppLogger.error('[AUTH] Request data: ${e.requestOptions.data}');
       throw _mapDioException(e);
     } catch (e, stackTrace) {
       AppLogger.error('Login failed', error: e, stackTrace: stackTrace);

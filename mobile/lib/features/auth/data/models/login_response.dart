@@ -1,7 +1,7 @@
 class LoginResponse {
   final String token;
-  final int empresaId;
-  final int usuarioId;
+  final String empresaId;
+  final String usuarioId;
 
   const LoginResponse({
     required this.token,
@@ -10,10 +10,12 @@ class LoginResponse {
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
+    String asString(dynamic value) => value?.toString() ?? '';
+
     return LoginResponse(
-      token: json['token'] as String,
-      empresaId: json['perfil']['empresa_id'] as int,
-      usuarioId: json['usuario']['id'] as int,
+      token: json['token'] as String? ?? '',
+      empresaId: asString(json['perfil']?['empresa_id']),
+      usuarioId: asString(json['usuario']?['id']),
     );
   }
 }

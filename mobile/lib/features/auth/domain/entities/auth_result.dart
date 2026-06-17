@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 
 class AuthResult extends Equatable {
   final String token;
-  final int empresaId;
-  final int usuarioId;
+  final String empresaId;
+  final String usuarioId;
 
   const AuthResult({
     required this.token,
