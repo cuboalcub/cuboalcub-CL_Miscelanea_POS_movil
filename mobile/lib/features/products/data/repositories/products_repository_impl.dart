@@ -115,4 +115,91 @@ class ProductsRepositoryImpl implements ProductsRepository {
       syncPending: row.syncPending,
     );
   }
+
+  @override
+  Future<List<Product>> searchProducts(String query) async {
+    final stopwatch = Stopwatch()..start();
+    final normalizedQuery = query.trim().toLowerCase();
+
+    print('[SEARCH] query received: "$normalizedQuery"');
+
+    if (normalizedQuery.isEmpty) {
+      stopwatch.stop();
+      print('[SEARCH] result count: 0');
+      print('[SEARCH] duration: ${stopwatch.elapsedMilliseconds}ms');
+      return [];
+    }
+
+    final lowerQuery = '%$normalizedQuery%';
+    final exactQuery = normalizedQuery;
+
+    final nombreLower = CustomExpression<String>(
+      'LOWER(nombre)',
+    );
+    final codigoBarrasLower = CustomExpression<String>(
+      'LOWER(codigo_barras)',
+    );
+
+    final rows = await (_database.select(_database.productsTable)
+          ..where(
+            (t) =>
+                nombreLower.like(lowerQuery) |
+                codigoBarrasLower.like(lowerQuery),
+          ))
+        .get();
+
+    final products = rows.map(_mapToEntity).toList();
+
+    products.sort((a, b) {
+      final aBarcode = a.codigoBarras?.toLowerCase() ?? '';
+      final bBarcode = b.codigoBarras?.toLowerCase() ?? '';
+      final aNombre = a.nombre.toLowerCase();
+      final bNombre = b.nombre.toLowerCase();
+
+      final aBarcodeExact = aBarcode == exactQuery;
+      final bBarcodeExact = bBarcode == exactQuery;
+      if (aBarcodeExact && !bBarcodeExact) return -1;
+      if (!aBarcodeExact && bBarcodeExact) return 1;
+
+      final aNombreExact = aNombre == exactQuery;
+      final bNombreExact = bNombre == exactQuery;
+      if (aNombreExact && !bNombreExact) return -1;
+      if (!aNombreExact && bNombreExact) return 1;
+
+      final aBarcodeStarts = aBarcode.startsWith(exactQuery);
+      final bBarcodeStarts = bBarcode.startsWith(exactQuery);
+      if (aBarcodeStarts && !bBarcodeStarts) return -1;
+      if (!aBarcodeStarts && bBarcodeStarts) return 1;
+
+      final aNombreStarts = aNombre.startsWith(exactQuery);
+      final bNombreStarts = bNombre.startsWith(exactQuery);
+      if (aNombreStarts && !bNombreStarts) return -1;
+      if (!aNombreStarts && bNombreStarts) return 1;
+
+      return aNombre.compareTo(bNombre);
+    });
+
+    String matchType = 'contains';
+    if (products.isNotEmpty) {
+      final first = products.first;
+      final firstBarcode = first.codigoBarras?.toLowerCase() ?? '';
+      final firstNombre = first.nombre.toLowerCase();
+      if (firstBarcode == exactQuery) {
+        matchType = 'barcode_exact';
+      } else if (firstNombre == exactQuery) {
+        matchType = 'name_exact';
+      } else if (firstBarcode.startsWith(exactQuery)) {
+        matchType = 'barcode_prefix';
+      } else if (firstNombre.startsWith(exactQuery)) {
+        matchType = 'name_prefix';
+      }
+    }
+
+    stopwatch.stop();
+    print('[SEARCH] result count: ${products.length}');
+    print('[SEARCH] match type: $matchType');
+    print('[SEARCH] duration: ${stopwatch.elapsedMilliseconds}ms');
+
+    return products;
+  }
 }

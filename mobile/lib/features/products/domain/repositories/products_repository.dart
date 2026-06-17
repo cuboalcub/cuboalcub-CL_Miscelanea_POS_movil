@@ -8,4 +8,5 @@ abstract class ProductsRepository {
   Future<void> deleteProduct(String id);
   Future<List<Product>> getPendingSyncProducts();
   Future<void> markAsSynced(String id);
+  Future<List<Product>> searchProducts(String query);
 }

@@ -1465,6 +1465,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ProductsTableTable productsTable = $ProductsTableTable(this);
   late final $SATCatalogItemTableTable sATCatalogItemTable =
       $SATCatalogItemTableTable(this);
+  late final Index productsNombre = Index(
+    'products_nombre',
+    'CREATE INDEX products_nombre ON products_table (nombre)',
+  );
+  late final Index productsCodigoBarras = Index(
+    'products_codigo_barras',
+    'CREATE INDEX products_codigo_barras ON products_table (codigo_barras)',
+  );
   late final Index satCatalogItemTypeDesc = Index(
     'sat_catalog_item_type_desc',
     'CREATE INDEX sat_catalog_item_type_desc ON s_a_t_catalog_item_table (type, description)',
@@ -1476,6 +1484,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     productsTable,
     sATCatalogItemTable,
+    productsNombre,
+    productsCodigoBarras,
     satCatalogItemTypeDesc,
   ];
 }
