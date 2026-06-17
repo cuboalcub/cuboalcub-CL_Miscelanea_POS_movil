@@ -12,6 +12,7 @@ import 'features/auth/presentation/bloc/auth_event.dart';
 import 'features/auth/presentation/bloc/auth_state.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 import 'features/products/presentation/pages/products_page.dart';
+import 'features/pos/presentation/pages/pos_page.dart';
 import 'features/sync/data/sat_sync_service.dart';
 
 Future<void> main() async {
@@ -128,6 +129,17 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('Bienvenido'),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const POSPage()),
+                );
+              },
+              icon: const Icon(Icons.point_of_sale),
+              label: const Text('Punto de Venta'),
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
