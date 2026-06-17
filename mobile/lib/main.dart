@@ -15,6 +15,7 @@ import 'features/products/presentation/bloc/products_list_bloc.dart';
 import 'features/products/presentation/bloc/search_bloc.dart';
 import 'features/products/presentation/pages/products_page.dart';
 import 'features/pos/presentation/bloc/cart_bloc.dart';
+import 'features/ventas/presentation/bloc/venta_bloc.dart';
 import 'features/pos/presentation/pages/pos_page.dart';
 import 'features/sync/data/sat_sync_service.dart';
 
@@ -148,6 +149,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                         BlocProvider<CartBloc>(
                           create: (_) => sl<CartBloc>(),
+                        ),
+                        BlocProvider<VentaBloc>(
+                          create: (_) => sl<VentaBloc>(),
                         ),
                       ],
                       child: const POSPage(),

@@ -6,6 +6,8 @@ import '../config/app_config.dart';
 import '../database/app_database.dart';
 import '../network/dio_logging_interceptor.dart';
 import '../services/session_manager.dart';
+import '../services/sync_service.dart';
+import '../services/sync_worker.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
@@ -15,6 +17,10 @@ import '../../features/products/domain/repositories/products_repository.dart';
 import '../../features/products/presentation/bloc/search_bloc.dart';
 import '../../features/products/presentation/bloc/products_list_bloc.dart';
 import '../../features/pos/presentation/bloc/cart_bloc.dart';
+import '../../features/ventas/data/datasources/venta_api_service.dart';
+import '../../features/ventas/data/repositories/venta_repository_impl.dart';
+import '../../features/ventas/domain/repositories/venta_repository.dart';
+import '../../features/ventas/presentation/bloc/venta_bloc.dart';
 import '../../features/sync/data/sat_sync_service.dart';
 import '../../features/sync/data/catalog_sync_service.dart';
 
@@ -89,6 +95,22 @@ void _registerServices() {
       ),
     );
   }
+
+  if (!sl.isRegistered<SyncService>()) {
+    sl.registerLazySingleton<SyncService>(
+      () => SyncService(
+        database: sl<AppDatabase>(),
+        dio: sl<Dio>(),
+        sessionManager: sl<SessionManager>(),
+      ),
+    );
+  }
+
+  if (!sl.isRegistered<SyncWorker>()) {
+    sl.registerLazySingleton<SyncWorker>(
+      () => SyncWorker(),
+    );
+  }
 }
 
 void _registerRepositories() {
@@ -118,6 +140,24 @@ void _registerRepositories() {
       ),
     );
   }
+
+  if (!sl.isRegistered<VentaApiService>()) {
+    sl.registerLazySingleton<VentaApiService>(
+      () => VentaApiService(
+        dio: sl<Dio>(),
+        sessionManager: sl<SessionManager>(),
+      ),
+    );
+  }
+
+  if (!sl.isRegistered<VentaRepository>()) {
+    sl.registerLazySingleton<VentaRepository>(
+      () => VentaRepositoryImpl(
+        database: sl<AppDatabase>(),
+        syncService: sl<SyncService>(),
+      ),
+    );
+  }
 }
 
 void _registerBlocs() {
@@ -140,5 +180,12 @@ void _registerBlocs() {
 
   sl.registerFactory<CartBloc>(
     () => CartBloc(),
+  );
+
+  sl.registerFactory<VentaBloc>(
+    () => VentaBloc(
+      ventaRepository: sl<VentaRepository>(),
+      syncService: sl<SyncService>(),
+    ),
   );
 }

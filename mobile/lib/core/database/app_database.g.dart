@@ -1459,12 +1459,2022 @@ class SATCatalogItemTableCompanion
   }
 }
 
+class $VentasLocalTableTable extends VentasLocalTable
+    with TableInfo<$VentasLocalTableTable, VentasLocalTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VentasLocalTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _empresaIdMeta = const VerificationMeta(
+    'empresaId',
+  );
+  @override
+  late final GeneratedColumn<String> empresaId = GeneratedColumn<String>(
+    'empresa_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _usuarioIdMeta = const VerificationMeta(
+    'usuarioId',
+  );
+  @override
+  late final GeneratedColumn<String> usuarioId = GeneratedColumn<String>(
+    'usuario_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sucursalIdMeta = const VerificationMeta(
+    'sucursalId',
+  );
+  @override
+  late final GeneratedColumn<String> sucursalId = GeneratedColumn<String>(
+    'sucursal_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _formaPagoMeta = const VerificationMeta(
+    'formaPago',
+  );
+  @override
+  late final GeneratedColumn<String> formaPago = GeneratedColumn<String>(
+    'forma_pago',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _metodoPagoMeta = const VerificationMeta(
+    'metodoPago',
+  );
+  @override
+  late final GeneratedColumn<String> metodoPago = GeneratedColumn<String>(
+    'metodo_pago',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _usoCfdiMeta = const VerificationMeta(
+    'usoCfdi',
+  );
+  @override
+  late final GeneratedColumn<String> usoCfdi = GeneratedColumn<String>(
+    'uso_cfdi',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subtotalMeta = const VerificationMeta(
+    'subtotal',
+  );
+  @override
+  late final GeneratedColumn<double> subtotal = GeneratedColumn<double>(
+    'subtotal',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ivaMeta = const VerificationMeta('iva');
+  @override
+  late final GeneratedColumn<double> iva = GeneratedColumn<double>(
+    'iva',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _totalMeta = const VerificationMeta('total');
+  @override
+  late final GeneratedColumn<double> total = GeneratedColumn<double>(
+    'total',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _estadoMeta = const VerificationMeta('estado');
+  @override
+  late final GeneratedColumn<String> estado = GeneratedColumn<String>(
+    'estado',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  static const VerificationMeta _backendIdMeta = const VerificationMeta(
+    'backendId',
+  );
+  @override
+  late final GeneratedColumn<String> backendId = GeneratedColumn<String>(
+    'backend_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _payloadJsonMeta = const VerificationMeta(
+    'payloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+    'payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _errorMessageMeta = const VerificationMeta(
+    'errorMessage',
+  );
+  @override
+  late final GeneratedColumn<String> errorMessage = GeneratedColumn<String>(
+    'error_message',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncPendingMeta = const VerificationMeta(
+    'syncPending',
+  );
+  @override
+  late final GeneratedColumn<bool> syncPending = GeneratedColumn<bool>(
+    'sync_pending',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("sync_pending" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    empresaId,
+    usuarioId,
+    sucursalId,
+    formaPago,
+    metodoPago,
+    usoCfdi,
+    subtotal,
+    iva,
+    total,
+    estado,
+    backendId,
+    payloadJson,
+    errorMessage,
+    createdAt,
+    updatedAt,
+    syncPending,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ventas_local_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VentasLocalTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('empresa_id')) {
+      context.handle(
+        _empresaIdMeta,
+        empresaId.isAcceptableOrUnknown(data['empresa_id']!, _empresaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_empresaIdMeta);
+    }
+    if (data.containsKey('usuario_id')) {
+      context.handle(
+        _usuarioIdMeta,
+        usuarioId.isAcceptableOrUnknown(data['usuario_id']!, _usuarioIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_usuarioIdMeta);
+    }
+    if (data.containsKey('sucursal_id')) {
+      context.handle(
+        _sucursalIdMeta,
+        sucursalId.isAcceptableOrUnknown(data['sucursal_id']!, _sucursalIdMeta),
+      );
+    }
+    if (data.containsKey('forma_pago')) {
+      context.handle(
+        _formaPagoMeta,
+        formaPago.isAcceptableOrUnknown(data['forma_pago']!, _formaPagoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_formaPagoMeta);
+    }
+    if (data.containsKey('metodo_pago')) {
+      context.handle(
+        _metodoPagoMeta,
+        metodoPago.isAcceptableOrUnknown(data['metodo_pago']!, _metodoPagoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_metodoPagoMeta);
+    }
+    if (data.containsKey('uso_cfdi')) {
+      context.handle(
+        _usoCfdiMeta,
+        usoCfdi.isAcceptableOrUnknown(data['uso_cfdi']!, _usoCfdiMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_usoCfdiMeta);
+    }
+    if (data.containsKey('subtotal')) {
+      context.handle(
+        _subtotalMeta,
+        subtotal.isAcceptableOrUnknown(data['subtotal']!, _subtotalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_subtotalMeta);
+    }
+    if (data.containsKey('iva')) {
+      context.handle(
+        _ivaMeta,
+        iva.isAcceptableOrUnknown(data['iva']!, _ivaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ivaMeta);
+    }
+    if (data.containsKey('total')) {
+      context.handle(
+        _totalMeta,
+        total.isAcceptableOrUnknown(data['total']!, _totalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_totalMeta);
+    }
+    if (data.containsKey('estado')) {
+      context.handle(
+        _estadoMeta,
+        estado.isAcceptableOrUnknown(data['estado']!, _estadoMeta),
+      );
+    }
+    if (data.containsKey('backend_id')) {
+      context.handle(
+        _backendIdMeta,
+        backendId.isAcceptableOrUnknown(data['backend_id']!, _backendIdMeta),
+      );
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+        _payloadJsonMeta,
+        payloadJson.isAcceptableOrUnknown(
+          data['payload_json']!,
+          _payloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    if (data.containsKey('error_message')) {
+      context.handle(
+        _errorMessageMeta,
+        errorMessage.isAcceptableOrUnknown(
+          data['error_message']!,
+          _errorMessageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('sync_pending')) {
+      context.handle(
+        _syncPendingMeta,
+        syncPending.isAcceptableOrUnknown(
+          data['sync_pending']!,
+          _syncPendingMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VentasLocalTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VentasLocalTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      empresaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}empresa_id'],
+      )!,
+      usuarioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}usuario_id'],
+      )!,
+      sucursalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sucursal_id'],
+      ),
+      formaPago: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}forma_pago'],
+      )!,
+      metodoPago: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}metodo_pago'],
+      )!,
+      usoCfdi: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uso_cfdi'],
+      )!,
+      subtotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}subtotal'],
+      )!,
+      iva: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}iva'],
+      )!,
+      total: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}total'],
+      )!,
+      estado: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}estado'],
+      )!,
+      backendId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}backend_id'],
+      ),
+      payloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload_json'],
+      )!,
+      errorMessage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}error_message'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      syncPending: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}sync_pending'],
+      )!,
+    );
+  }
+
+  @override
+  $VentasLocalTableTable createAlias(String alias) {
+    return $VentasLocalTableTable(attachedDatabase, alias);
+  }
+}
+
+class VentasLocalTableData extends DataClass
+    implements Insertable<VentasLocalTableData> {
+  final String id;
+  final String empresaId;
+  final String usuarioId;
+  final String? sucursalId;
+  final String formaPago;
+  final String metodoPago;
+  final String usoCfdi;
+  final double subtotal;
+  final double iva;
+  final double total;
+  final String estado;
+  final String? backendId;
+  final String payloadJson;
+  final String? errorMessage;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool syncPending;
+  const VentasLocalTableData({
+    required this.id,
+    required this.empresaId,
+    required this.usuarioId,
+    this.sucursalId,
+    required this.formaPago,
+    required this.metodoPago,
+    required this.usoCfdi,
+    required this.subtotal,
+    required this.iva,
+    required this.total,
+    required this.estado,
+    this.backendId,
+    required this.payloadJson,
+    this.errorMessage,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.syncPending,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['empresa_id'] = Variable<String>(empresaId);
+    map['usuario_id'] = Variable<String>(usuarioId);
+    if (!nullToAbsent || sucursalId != null) {
+      map['sucursal_id'] = Variable<String>(sucursalId);
+    }
+    map['forma_pago'] = Variable<String>(formaPago);
+    map['metodo_pago'] = Variable<String>(metodoPago);
+    map['uso_cfdi'] = Variable<String>(usoCfdi);
+    map['subtotal'] = Variable<double>(subtotal);
+    map['iva'] = Variable<double>(iva);
+    map['total'] = Variable<double>(total);
+    map['estado'] = Variable<String>(estado);
+    if (!nullToAbsent || backendId != null) {
+      map['backend_id'] = Variable<String>(backendId);
+    }
+    map['payload_json'] = Variable<String>(payloadJson);
+    if (!nullToAbsent || errorMessage != null) {
+      map['error_message'] = Variable<String>(errorMessage);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['sync_pending'] = Variable<bool>(syncPending);
+    return map;
+  }
+
+  VentasLocalTableCompanion toCompanion(bool nullToAbsent) {
+    return VentasLocalTableCompanion(
+      id: Value(id),
+      empresaId: Value(empresaId),
+      usuarioId: Value(usuarioId),
+      sucursalId: sucursalId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sucursalId),
+      formaPago: Value(formaPago),
+      metodoPago: Value(metodoPago),
+      usoCfdi: Value(usoCfdi),
+      subtotal: Value(subtotal),
+      iva: Value(iva),
+      total: Value(total),
+      estado: Value(estado),
+      backendId: backendId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(backendId),
+      payloadJson: Value(payloadJson),
+      errorMessage: errorMessage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(errorMessage),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      syncPending: Value(syncPending),
+    );
+  }
+
+  factory VentasLocalTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VentasLocalTableData(
+      id: serializer.fromJson<String>(json['id']),
+      empresaId: serializer.fromJson<String>(json['empresaId']),
+      usuarioId: serializer.fromJson<String>(json['usuarioId']),
+      sucursalId: serializer.fromJson<String?>(json['sucursalId']),
+      formaPago: serializer.fromJson<String>(json['formaPago']),
+      metodoPago: serializer.fromJson<String>(json['metodoPago']),
+      usoCfdi: serializer.fromJson<String>(json['usoCfdi']),
+      subtotal: serializer.fromJson<double>(json['subtotal']),
+      iva: serializer.fromJson<double>(json['iva']),
+      total: serializer.fromJson<double>(json['total']),
+      estado: serializer.fromJson<String>(json['estado']),
+      backendId: serializer.fromJson<String?>(json['backendId']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+      errorMessage: serializer.fromJson<String?>(json['errorMessage']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      syncPending: serializer.fromJson<bool>(json['syncPending']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'empresaId': serializer.toJson<String>(empresaId),
+      'usuarioId': serializer.toJson<String>(usuarioId),
+      'sucursalId': serializer.toJson<String?>(sucursalId),
+      'formaPago': serializer.toJson<String>(formaPago),
+      'metodoPago': serializer.toJson<String>(metodoPago),
+      'usoCfdi': serializer.toJson<String>(usoCfdi),
+      'subtotal': serializer.toJson<double>(subtotal),
+      'iva': serializer.toJson<double>(iva),
+      'total': serializer.toJson<double>(total),
+      'estado': serializer.toJson<String>(estado),
+      'backendId': serializer.toJson<String?>(backendId),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+      'errorMessage': serializer.toJson<String?>(errorMessage),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'syncPending': serializer.toJson<bool>(syncPending),
+    };
+  }
+
+  VentasLocalTableData copyWith({
+    String? id,
+    String? empresaId,
+    String? usuarioId,
+    Value<String?> sucursalId = const Value.absent(),
+    String? formaPago,
+    String? metodoPago,
+    String? usoCfdi,
+    double? subtotal,
+    double? iva,
+    double? total,
+    String? estado,
+    Value<String?> backendId = const Value.absent(),
+    String? payloadJson,
+    Value<String?> errorMessage = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? syncPending,
+  }) => VentasLocalTableData(
+    id: id ?? this.id,
+    empresaId: empresaId ?? this.empresaId,
+    usuarioId: usuarioId ?? this.usuarioId,
+    sucursalId: sucursalId.present ? sucursalId.value : this.sucursalId,
+    formaPago: formaPago ?? this.formaPago,
+    metodoPago: metodoPago ?? this.metodoPago,
+    usoCfdi: usoCfdi ?? this.usoCfdi,
+    subtotal: subtotal ?? this.subtotal,
+    iva: iva ?? this.iva,
+    total: total ?? this.total,
+    estado: estado ?? this.estado,
+    backendId: backendId.present ? backendId.value : this.backendId,
+    payloadJson: payloadJson ?? this.payloadJson,
+    errorMessage: errorMessage.present ? errorMessage.value : this.errorMessage,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    syncPending: syncPending ?? this.syncPending,
+  );
+  VentasLocalTableData copyWithCompanion(VentasLocalTableCompanion data) {
+    return VentasLocalTableData(
+      id: data.id.present ? data.id.value : this.id,
+      empresaId: data.empresaId.present ? data.empresaId.value : this.empresaId,
+      usuarioId: data.usuarioId.present ? data.usuarioId.value : this.usuarioId,
+      sucursalId: data.sucursalId.present
+          ? data.sucursalId.value
+          : this.sucursalId,
+      formaPago: data.formaPago.present ? data.formaPago.value : this.formaPago,
+      metodoPago: data.metodoPago.present
+          ? data.metodoPago.value
+          : this.metodoPago,
+      usoCfdi: data.usoCfdi.present ? data.usoCfdi.value : this.usoCfdi,
+      subtotal: data.subtotal.present ? data.subtotal.value : this.subtotal,
+      iva: data.iva.present ? data.iva.value : this.iva,
+      total: data.total.present ? data.total.value : this.total,
+      estado: data.estado.present ? data.estado.value : this.estado,
+      backendId: data.backendId.present ? data.backendId.value : this.backendId,
+      payloadJson: data.payloadJson.present
+          ? data.payloadJson.value
+          : this.payloadJson,
+      errorMessage: data.errorMessage.present
+          ? data.errorMessage.value
+          : this.errorMessage,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      syncPending: data.syncPending.present
+          ? data.syncPending.value
+          : this.syncPending,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VentasLocalTableData(')
+          ..write('id: $id, ')
+          ..write('empresaId: $empresaId, ')
+          ..write('usuarioId: $usuarioId, ')
+          ..write('sucursalId: $sucursalId, ')
+          ..write('formaPago: $formaPago, ')
+          ..write('metodoPago: $metodoPago, ')
+          ..write('usoCfdi: $usoCfdi, ')
+          ..write('subtotal: $subtotal, ')
+          ..write('iva: $iva, ')
+          ..write('total: $total, ')
+          ..write('estado: $estado, ')
+          ..write('backendId: $backendId, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('errorMessage: $errorMessage, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncPending: $syncPending')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    empresaId,
+    usuarioId,
+    sucursalId,
+    formaPago,
+    metodoPago,
+    usoCfdi,
+    subtotal,
+    iva,
+    total,
+    estado,
+    backendId,
+    payloadJson,
+    errorMessage,
+    createdAt,
+    updatedAt,
+    syncPending,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VentasLocalTableData &&
+          other.id == this.id &&
+          other.empresaId == this.empresaId &&
+          other.usuarioId == this.usuarioId &&
+          other.sucursalId == this.sucursalId &&
+          other.formaPago == this.formaPago &&
+          other.metodoPago == this.metodoPago &&
+          other.usoCfdi == this.usoCfdi &&
+          other.subtotal == this.subtotal &&
+          other.iva == this.iva &&
+          other.total == this.total &&
+          other.estado == this.estado &&
+          other.backendId == this.backendId &&
+          other.payloadJson == this.payloadJson &&
+          other.errorMessage == this.errorMessage &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.syncPending == this.syncPending);
+}
+
+class VentasLocalTableCompanion extends UpdateCompanion<VentasLocalTableData> {
+  final Value<String> id;
+  final Value<String> empresaId;
+  final Value<String> usuarioId;
+  final Value<String?> sucursalId;
+  final Value<String> formaPago;
+  final Value<String> metodoPago;
+  final Value<String> usoCfdi;
+  final Value<double> subtotal;
+  final Value<double> iva;
+  final Value<double> total;
+  final Value<String> estado;
+  final Value<String?> backendId;
+  final Value<String> payloadJson;
+  final Value<String?> errorMessage;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<bool> syncPending;
+  final Value<int> rowid;
+  const VentasLocalTableCompanion({
+    this.id = const Value.absent(),
+    this.empresaId = const Value.absent(),
+    this.usuarioId = const Value.absent(),
+    this.sucursalId = const Value.absent(),
+    this.formaPago = const Value.absent(),
+    this.metodoPago = const Value.absent(),
+    this.usoCfdi = const Value.absent(),
+    this.subtotal = const Value.absent(),
+    this.iva = const Value.absent(),
+    this.total = const Value.absent(),
+    this.estado = const Value.absent(),
+    this.backendId = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.errorMessage = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.syncPending = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VentasLocalTableCompanion.insert({
+    required String id,
+    required String empresaId,
+    required String usuarioId,
+    this.sucursalId = const Value.absent(),
+    required String formaPago,
+    required String metodoPago,
+    required String usoCfdi,
+    required double subtotal,
+    required double iva,
+    required double total,
+    this.estado = const Value.absent(),
+    this.backendId = const Value.absent(),
+    required String payloadJson,
+    this.errorMessage = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.syncPending = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       empresaId = Value(empresaId),
+       usuarioId = Value(usuarioId),
+       formaPago = Value(formaPago),
+       metodoPago = Value(metodoPago),
+       usoCfdi = Value(usoCfdi),
+       subtotal = Value(subtotal),
+       iva = Value(iva),
+       total = Value(total),
+       payloadJson = Value(payloadJson),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<VentasLocalTableData> custom({
+    Expression<String>? id,
+    Expression<String>? empresaId,
+    Expression<String>? usuarioId,
+    Expression<String>? sucursalId,
+    Expression<String>? formaPago,
+    Expression<String>? metodoPago,
+    Expression<String>? usoCfdi,
+    Expression<double>? subtotal,
+    Expression<double>? iva,
+    Expression<double>? total,
+    Expression<String>? estado,
+    Expression<String>? backendId,
+    Expression<String>? payloadJson,
+    Expression<String>? errorMessage,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? syncPending,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (empresaId != null) 'empresa_id': empresaId,
+      if (usuarioId != null) 'usuario_id': usuarioId,
+      if (sucursalId != null) 'sucursal_id': sucursalId,
+      if (formaPago != null) 'forma_pago': formaPago,
+      if (metodoPago != null) 'metodo_pago': metodoPago,
+      if (usoCfdi != null) 'uso_cfdi': usoCfdi,
+      if (subtotal != null) 'subtotal': subtotal,
+      if (iva != null) 'iva': iva,
+      if (total != null) 'total': total,
+      if (estado != null) 'estado': estado,
+      if (backendId != null) 'backend_id': backendId,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (errorMessage != null) 'error_message': errorMessage,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (syncPending != null) 'sync_pending': syncPending,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VentasLocalTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? empresaId,
+    Value<String>? usuarioId,
+    Value<String?>? sucursalId,
+    Value<String>? formaPago,
+    Value<String>? metodoPago,
+    Value<String>? usoCfdi,
+    Value<double>? subtotal,
+    Value<double>? iva,
+    Value<double>? total,
+    Value<String>? estado,
+    Value<String?>? backendId,
+    Value<String>? payloadJson,
+    Value<String?>? errorMessage,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<bool>? syncPending,
+    Value<int>? rowid,
+  }) {
+    return VentasLocalTableCompanion(
+      id: id ?? this.id,
+      empresaId: empresaId ?? this.empresaId,
+      usuarioId: usuarioId ?? this.usuarioId,
+      sucursalId: sucursalId ?? this.sucursalId,
+      formaPago: formaPago ?? this.formaPago,
+      metodoPago: metodoPago ?? this.metodoPago,
+      usoCfdi: usoCfdi ?? this.usoCfdi,
+      subtotal: subtotal ?? this.subtotal,
+      iva: iva ?? this.iva,
+      total: total ?? this.total,
+      estado: estado ?? this.estado,
+      backendId: backendId ?? this.backendId,
+      payloadJson: payloadJson ?? this.payloadJson,
+      errorMessage: errorMessage ?? this.errorMessage,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      syncPending: syncPending ?? this.syncPending,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (empresaId.present) {
+      map['empresa_id'] = Variable<String>(empresaId.value);
+    }
+    if (usuarioId.present) {
+      map['usuario_id'] = Variable<String>(usuarioId.value);
+    }
+    if (sucursalId.present) {
+      map['sucursal_id'] = Variable<String>(sucursalId.value);
+    }
+    if (formaPago.present) {
+      map['forma_pago'] = Variable<String>(formaPago.value);
+    }
+    if (metodoPago.present) {
+      map['metodo_pago'] = Variable<String>(metodoPago.value);
+    }
+    if (usoCfdi.present) {
+      map['uso_cfdi'] = Variable<String>(usoCfdi.value);
+    }
+    if (subtotal.present) {
+      map['subtotal'] = Variable<double>(subtotal.value);
+    }
+    if (iva.present) {
+      map['iva'] = Variable<double>(iva.value);
+    }
+    if (total.present) {
+      map['total'] = Variable<double>(total.value);
+    }
+    if (estado.present) {
+      map['estado'] = Variable<String>(estado.value);
+    }
+    if (backendId.present) {
+      map['backend_id'] = Variable<String>(backendId.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (errorMessage.present) {
+      map['error_message'] = Variable<String>(errorMessage.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (syncPending.present) {
+      map['sync_pending'] = Variable<bool>(syncPending.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VentasLocalTableCompanion(')
+          ..write('id: $id, ')
+          ..write('empresaId: $empresaId, ')
+          ..write('usuarioId: $usuarioId, ')
+          ..write('sucursalId: $sucursalId, ')
+          ..write('formaPago: $formaPago, ')
+          ..write('metodoPago: $metodoPago, ')
+          ..write('usoCfdi: $usoCfdi, ')
+          ..write('subtotal: $subtotal, ')
+          ..write('iva: $iva, ')
+          ..write('total: $total, ')
+          ..write('estado: $estado, ')
+          ..write('backendId: $backendId, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('errorMessage: $errorMessage, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncPending: $syncPending, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VentaItemsLocalTableTable extends VentaItemsLocalTable
+    with TableInfo<$VentaItemsLocalTableTable, VentaItemsLocalTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VentaItemsLocalTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ventaIdMeta = const VerificationMeta(
+    'ventaId',
+  );
+  @override
+  late final GeneratedColumn<String> ventaId = GeneratedColumn<String>(
+    'venta_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _productoIdMeta = const VerificationMeta(
+    'productoId',
+  );
+  @override
+  late final GeneratedColumn<String> productoId = GeneratedColumn<String>(
+    'producto_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _productoNombreMeta = const VerificationMeta(
+    'productoNombre',
+  );
+  @override
+  late final GeneratedColumn<String> productoNombre = GeneratedColumn<String>(
+    'producto_nombre',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cantidadMeta = const VerificationMeta(
+    'cantidad',
+  );
+  @override
+  late final GeneratedColumn<int> cantidad = GeneratedColumn<int>(
+    'cantidad',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _precioUnitarioMeta = const VerificationMeta(
+    'precioUnitario',
+  );
+  @override
+  late final GeneratedColumn<double> precioUnitario = GeneratedColumn<double>(
+    'precio_unitario',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subtotalMeta = const VerificationMeta(
+    'subtotal',
+  );
+  @override
+  late final GeneratedColumn<double> subtotal = GeneratedColumn<double>(
+    'subtotal',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    ventaId,
+    productoId,
+    productoNombre,
+    cantidad,
+    precioUnitario,
+    subtotal,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'venta_items_local_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VentaItemsLocalTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('venta_id')) {
+      context.handle(
+        _ventaIdMeta,
+        ventaId.isAcceptableOrUnknown(data['venta_id']!, _ventaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ventaIdMeta);
+    }
+    if (data.containsKey('producto_id')) {
+      context.handle(
+        _productoIdMeta,
+        productoId.isAcceptableOrUnknown(data['producto_id']!, _productoIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_productoIdMeta);
+    }
+    if (data.containsKey('producto_nombre')) {
+      context.handle(
+        _productoNombreMeta,
+        productoNombre.isAcceptableOrUnknown(
+          data['producto_nombre']!,
+          _productoNombreMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_productoNombreMeta);
+    }
+    if (data.containsKey('cantidad')) {
+      context.handle(
+        _cantidadMeta,
+        cantidad.isAcceptableOrUnknown(data['cantidad']!, _cantidadMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cantidadMeta);
+    }
+    if (data.containsKey('precio_unitario')) {
+      context.handle(
+        _precioUnitarioMeta,
+        precioUnitario.isAcceptableOrUnknown(
+          data['precio_unitario']!,
+          _precioUnitarioMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_precioUnitarioMeta);
+    }
+    if (data.containsKey('subtotal')) {
+      context.handle(
+        _subtotalMeta,
+        subtotal.isAcceptableOrUnknown(data['subtotal']!, _subtotalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_subtotalMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VentaItemsLocalTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VentaItemsLocalTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      ventaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}venta_id'],
+      )!,
+      productoId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}producto_id'],
+      )!,
+      productoNombre: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}producto_nombre'],
+      )!,
+      cantidad: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cantidad'],
+      )!,
+      precioUnitario: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}precio_unitario'],
+      )!,
+      subtotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}subtotal'],
+      )!,
+    );
+  }
+
+  @override
+  $VentaItemsLocalTableTable createAlias(String alias) {
+    return $VentaItemsLocalTableTable(attachedDatabase, alias);
+  }
+}
+
+class VentaItemsLocalTableData extends DataClass
+    implements Insertable<VentaItemsLocalTableData> {
+  final String id;
+  final String ventaId;
+  final String productoId;
+  final String productoNombre;
+  final int cantidad;
+  final double precioUnitario;
+  final double subtotal;
+  const VentaItemsLocalTableData({
+    required this.id,
+    required this.ventaId,
+    required this.productoId,
+    required this.productoNombre,
+    required this.cantidad,
+    required this.precioUnitario,
+    required this.subtotal,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['venta_id'] = Variable<String>(ventaId);
+    map['producto_id'] = Variable<String>(productoId);
+    map['producto_nombre'] = Variable<String>(productoNombre);
+    map['cantidad'] = Variable<int>(cantidad);
+    map['precio_unitario'] = Variable<double>(precioUnitario);
+    map['subtotal'] = Variable<double>(subtotal);
+    return map;
+  }
+
+  VentaItemsLocalTableCompanion toCompanion(bool nullToAbsent) {
+    return VentaItemsLocalTableCompanion(
+      id: Value(id),
+      ventaId: Value(ventaId),
+      productoId: Value(productoId),
+      productoNombre: Value(productoNombre),
+      cantidad: Value(cantidad),
+      precioUnitario: Value(precioUnitario),
+      subtotal: Value(subtotal),
+    );
+  }
+
+  factory VentaItemsLocalTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VentaItemsLocalTableData(
+      id: serializer.fromJson<String>(json['id']),
+      ventaId: serializer.fromJson<String>(json['ventaId']),
+      productoId: serializer.fromJson<String>(json['productoId']),
+      productoNombre: serializer.fromJson<String>(json['productoNombre']),
+      cantidad: serializer.fromJson<int>(json['cantidad']),
+      precioUnitario: serializer.fromJson<double>(json['precioUnitario']),
+      subtotal: serializer.fromJson<double>(json['subtotal']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'ventaId': serializer.toJson<String>(ventaId),
+      'productoId': serializer.toJson<String>(productoId),
+      'productoNombre': serializer.toJson<String>(productoNombre),
+      'cantidad': serializer.toJson<int>(cantidad),
+      'precioUnitario': serializer.toJson<double>(precioUnitario),
+      'subtotal': serializer.toJson<double>(subtotal),
+    };
+  }
+
+  VentaItemsLocalTableData copyWith({
+    String? id,
+    String? ventaId,
+    String? productoId,
+    String? productoNombre,
+    int? cantidad,
+    double? precioUnitario,
+    double? subtotal,
+  }) => VentaItemsLocalTableData(
+    id: id ?? this.id,
+    ventaId: ventaId ?? this.ventaId,
+    productoId: productoId ?? this.productoId,
+    productoNombre: productoNombre ?? this.productoNombre,
+    cantidad: cantidad ?? this.cantidad,
+    precioUnitario: precioUnitario ?? this.precioUnitario,
+    subtotal: subtotal ?? this.subtotal,
+  );
+  VentaItemsLocalTableData copyWithCompanion(
+    VentaItemsLocalTableCompanion data,
+  ) {
+    return VentaItemsLocalTableData(
+      id: data.id.present ? data.id.value : this.id,
+      ventaId: data.ventaId.present ? data.ventaId.value : this.ventaId,
+      productoId: data.productoId.present
+          ? data.productoId.value
+          : this.productoId,
+      productoNombre: data.productoNombre.present
+          ? data.productoNombre.value
+          : this.productoNombre,
+      cantidad: data.cantidad.present ? data.cantidad.value : this.cantidad,
+      precioUnitario: data.precioUnitario.present
+          ? data.precioUnitario.value
+          : this.precioUnitario,
+      subtotal: data.subtotal.present ? data.subtotal.value : this.subtotal,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VentaItemsLocalTableData(')
+          ..write('id: $id, ')
+          ..write('ventaId: $ventaId, ')
+          ..write('productoId: $productoId, ')
+          ..write('productoNombre: $productoNombre, ')
+          ..write('cantidad: $cantidad, ')
+          ..write('precioUnitario: $precioUnitario, ')
+          ..write('subtotal: $subtotal')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    ventaId,
+    productoId,
+    productoNombre,
+    cantidad,
+    precioUnitario,
+    subtotal,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VentaItemsLocalTableData &&
+          other.id == this.id &&
+          other.ventaId == this.ventaId &&
+          other.productoId == this.productoId &&
+          other.productoNombre == this.productoNombre &&
+          other.cantidad == this.cantidad &&
+          other.precioUnitario == this.precioUnitario &&
+          other.subtotal == this.subtotal);
+}
+
+class VentaItemsLocalTableCompanion
+    extends UpdateCompanion<VentaItemsLocalTableData> {
+  final Value<String> id;
+  final Value<String> ventaId;
+  final Value<String> productoId;
+  final Value<String> productoNombre;
+  final Value<int> cantidad;
+  final Value<double> precioUnitario;
+  final Value<double> subtotal;
+  final Value<int> rowid;
+  const VentaItemsLocalTableCompanion({
+    this.id = const Value.absent(),
+    this.ventaId = const Value.absent(),
+    this.productoId = const Value.absent(),
+    this.productoNombre = const Value.absent(),
+    this.cantidad = const Value.absent(),
+    this.precioUnitario = const Value.absent(),
+    this.subtotal = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VentaItemsLocalTableCompanion.insert({
+    required String id,
+    required String ventaId,
+    required String productoId,
+    required String productoNombre,
+    required int cantidad,
+    required double precioUnitario,
+    required double subtotal,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       ventaId = Value(ventaId),
+       productoId = Value(productoId),
+       productoNombre = Value(productoNombre),
+       cantidad = Value(cantidad),
+       precioUnitario = Value(precioUnitario),
+       subtotal = Value(subtotal);
+  static Insertable<VentaItemsLocalTableData> custom({
+    Expression<String>? id,
+    Expression<String>? ventaId,
+    Expression<String>? productoId,
+    Expression<String>? productoNombre,
+    Expression<int>? cantidad,
+    Expression<double>? precioUnitario,
+    Expression<double>? subtotal,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (ventaId != null) 'venta_id': ventaId,
+      if (productoId != null) 'producto_id': productoId,
+      if (productoNombre != null) 'producto_nombre': productoNombre,
+      if (cantidad != null) 'cantidad': cantidad,
+      if (precioUnitario != null) 'precio_unitario': precioUnitario,
+      if (subtotal != null) 'subtotal': subtotal,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VentaItemsLocalTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? ventaId,
+    Value<String>? productoId,
+    Value<String>? productoNombre,
+    Value<int>? cantidad,
+    Value<double>? precioUnitario,
+    Value<double>? subtotal,
+    Value<int>? rowid,
+  }) {
+    return VentaItemsLocalTableCompanion(
+      id: id ?? this.id,
+      ventaId: ventaId ?? this.ventaId,
+      productoId: productoId ?? this.productoId,
+      productoNombre: productoNombre ?? this.productoNombre,
+      cantidad: cantidad ?? this.cantidad,
+      precioUnitario: precioUnitario ?? this.precioUnitario,
+      subtotal: subtotal ?? this.subtotal,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (ventaId.present) {
+      map['venta_id'] = Variable<String>(ventaId.value);
+    }
+    if (productoId.present) {
+      map['producto_id'] = Variable<String>(productoId.value);
+    }
+    if (productoNombre.present) {
+      map['producto_nombre'] = Variable<String>(productoNombre.value);
+    }
+    if (cantidad.present) {
+      map['cantidad'] = Variable<int>(cantidad.value);
+    }
+    if (precioUnitario.present) {
+      map['precio_unitario'] = Variable<double>(precioUnitario.value);
+    }
+    if (subtotal.present) {
+      map['subtotal'] = Variable<double>(subtotal.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VentaItemsLocalTableCompanion(')
+          ..write('id: $id, ')
+          ..write('ventaId: $ventaId, ')
+          ..write('productoId: $productoId, ')
+          ..write('productoNombre: $productoNombre, ')
+          ..write('cantidad: $cantidad, ')
+          ..write('precioUnitario: $precioUnitario, ')
+          ..write('subtotal: $subtotal, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SyncQueueTableTable extends SyncQueueTable
+    with TableInfo<$SyncQueueTableTable, SyncQueueTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncQueueTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entidadMeta = const VerificationMeta(
+    'entidad',
+  );
+  @override
+  late final GeneratedColumn<String> entidad = GeneratedColumn<String>(
+    'entidad',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tipoMeta = const VerificationMeta('tipo');
+  @override
+  late final GeneratedColumn<String> tipo = GeneratedColumn<String>(
+    'tipo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadJsonMeta = const VerificationMeta(
+    'payloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+    'payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  static const VerificationMeta _retryCountMeta = const VerificationMeta(
+    'retryCount',
+  );
+  @override
+  late final GeneratedColumn<int> retryCount = GeneratedColumn<int>(
+    'retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    entidad,
+    tipo,
+    payloadJson,
+    status,
+    retryCount,
+    createdAt,
+    updatedAt,
+    lastError,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_queue_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SyncQueueTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('entidad')) {
+      context.handle(
+        _entidadMeta,
+        entidad.isAcceptableOrUnknown(data['entidad']!, _entidadMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entidadMeta);
+    }
+    if (data.containsKey('tipo')) {
+      context.handle(
+        _tipoMeta,
+        tipo.isAcceptableOrUnknown(data['tipo']!, _tipoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tipoMeta);
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+        _payloadJsonMeta,
+        payloadJson.isAcceptableOrUnknown(
+          data['payload_json']!,
+          _payloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('retry_count')) {
+      context.handle(
+        _retryCountMeta,
+        retryCount.isAcceptableOrUnknown(data['retry_count']!, _retryCountMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SyncQueueTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SyncQueueTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      entidad: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entidad'],
+      )!,
+      tipo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tipo'],
+      )!,
+      payloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload_json'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      retryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}retry_count'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
+    );
+  }
+
+  @override
+  $SyncQueueTableTable createAlias(String alias) {
+    return $SyncQueueTableTable(attachedDatabase, alias);
+  }
+}
+
+class SyncQueueTableData extends DataClass
+    implements Insertable<SyncQueueTableData> {
+  final String id;
+  final String entidad;
+  final String tipo;
+  final String payloadJson;
+  final String status;
+  final int retryCount;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String? lastError;
+  const SyncQueueTableData({
+    required this.id,
+    required this.entidad,
+    required this.tipo,
+    required this.payloadJson,
+    required this.status,
+    required this.retryCount,
+    required this.createdAt,
+    required this.updatedAt,
+    this.lastError,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['entidad'] = Variable<String>(entidad);
+    map['tipo'] = Variable<String>(tipo);
+    map['payload_json'] = Variable<String>(payloadJson);
+    map['status'] = Variable<String>(status);
+    map['retry_count'] = Variable<int>(retryCount);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
+    return map;
+  }
+
+  SyncQueueTableCompanion toCompanion(bool nullToAbsent) {
+    return SyncQueueTableCompanion(
+      id: Value(id),
+      entidad: Value(entidad),
+      tipo: Value(tipo),
+      payloadJson: Value(payloadJson),
+      status: Value(status),
+      retryCount: Value(retryCount),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
+    );
+  }
+
+  factory SyncQueueTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SyncQueueTableData(
+      id: serializer.fromJson<String>(json['id']),
+      entidad: serializer.fromJson<String>(json['entidad']),
+      tipo: serializer.fromJson<String>(json['tipo']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+      status: serializer.fromJson<String>(json['status']),
+      retryCount: serializer.fromJson<int>(json['retryCount']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      lastError: serializer.fromJson<String?>(json['lastError']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'entidad': serializer.toJson<String>(entidad),
+      'tipo': serializer.toJson<String>(tipo),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+      'status': serializer.toJson<String>(status),
+      'retryCount': serializer.toJson<int>(retryCount),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'lastError': serializer.toJson<String?>(lastError),
+    };
+  }
+
+  SyncQueueTableData copyWith({
+    String? id,
+    String? entidad,
+    String? tipo,
+    String? payloadJson,
+    String? status,
+    int? retryCount,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<String?> lastError = const Value.absent(),
+  }) => SyncQueueTableData(
+    id: id ?? this.id,
+    entidad: entidad ?? this.entidad,
+    tipo: tipo ?? this.tipo,
+    payloadJson: payloadJson ?? this.payloadJson,
+    status: status ?? this.status,
+    retryCount: retryCount ?? this.retryCount,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    lastError: lastError.present ? lastError.value : this.lastError,
+  );
+  SyncQueueTableData copyWithCompanion(SyncQueueTableCompanion data) {
+    return SyncQueueTableData(
+      id: data.id.present ? data.id.value : this.id,
+      entidad: data.entidad.present ? data.entidad.value : this.entidad,
+      tipo: data.tipo.present ? data.tipo.value : this.tipo,
+      payloadJson: data.payloadJson.present
+          ? data.payloadJson.value
+          : this.payloadJson,
+      status: data.status.present ? data.status.value : this.status,
+      retryCount: data.retryCount.present
+          ? data.retryCount.value
+          : this.retryCount,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncQueueTableData(')
+          ..write('id: $id, ')
+          ..write('entidad: $entidad, ')
+          ..write('tipo: $tipo, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('status: $status, ')
+          ..write('retryCount: $retryCount, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    entidad,
+    tipo,
+    payloadJson,
+    status,
+    retryCount,
+    createdAt,
+    updatedAt,
+    lastError,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SyncQueueTableData &&
+          other.id == this.id &&
+          other.entidad == this.entidad &&
+          other.tipo == this.tipo &&
+          other.payloadJson == this.payloadJson &&
+          other.status == this.status &&
+          other.retryCount == this.retryCount &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.lastError == this.lastError);
+}
+
+class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
+  final Value<String> id;
+  final Value<String> entidad;
+  final Value<String> tipo;
+  final Value<String> payloadJson;
+  final Value<String> status;
+  final Value<int> retryCount;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<String?> lastError;
+  final Value<int> rowid;
+  const SyncQueueTableCompanion({
+    this.id = const Value.absent(),
+    this.entidad = const Value.absent(),
+    this.tipo = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.status = const Value.absent(),
+    this.retryCount = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.lastError = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncQueueTableCompanion.insert({
+    required String id,
+    required String entidad,
+    required String tipo,
+    required String payloadJson,
+    this.status = const Value.absent(),
+    this.retryCount = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.lastError = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       entidad = Value(entidad),
+       tipo = Value(tipo),
+       payloadJson = Value(payloadJson),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<SyncQueueTableData> custom({
+    Expression<String>? id,
+    Expression<String>? entidad,
+    Expression<String>? tipo,
+    Expression<String>? payloadJson,
+    Expression<String>? status,
+    Expression<int>? retryCount,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<String>? lastError,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (entidad != null) 'entidad': entidad,
+      if (tipo != null) 'tipo': tipo,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (status != null) 'status': status,
+      if (retryCount != null) 'retry_count': retryCount,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (lastError != null) 'last_error': lastError,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncQueueTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? entidad,
+    Value<String>? tipo,
+    Value<String>? payloadJson,
+    Value<String>? status,
+    Value<int>? retryCount,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<String?>? lastError,
+    Value<int>? rowid,
+  }) {
+    return SyncQueueTableCompanion(
+      id: id ?? this.id,
+      entidad: entidad ?? this.entidad,
+      tipo: tipo ?? this.tipo,
+      payloadJson: payloadJson ?? this.payloadJson,
+      status: status ?? this.status,
+      retryCount: retryCount ?? this.retryCount,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      lastError: lastError ?? this.lastError,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (entidad.present) {
+      map['entidad'] = Variable<String>(entidad.value);
+    }
+    if (tipo.present) {
+      map['tipo'] = Variable<String>(tipo.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (retryCount.present) {
+      map['retry_count'] = Variable<int>(retryCount.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncQueueTableCompanion(')
+          ..write('id: $id, ')
+          ..write('entidad: $entidad, ')
+          ..write('tipo: $tipo, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('status: $status, ')
+          ..write('retryCount: $retryCount, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('lastError: $lastError, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ProductsTableTable productsTable = $ProductsTableTable(this);
   late final $SATCatalogItemTableTable sATCatalogItemTable =
       $SATCatalogItemTableTable(this);
+  late final $VentasLocalTableTable ventasLocalTable = $VentasLocalTableTable(
+    this,
+  );
+  late final $VentaItemsLocalTableTable ventaItemsLocalTable =
+      $VentaItemsLocalTableTable(this);
+  late final $SyncQueueTableTable syncQueueTable = $SyncQueueTableTable(this);
   late final Index productsNombre = Index(
     'products_nombre',
     'CREATE INDEX products_nombre ON products_table (nombre)',
@@ -1477,6 +3487,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'sat_catalog_item_type_desc',
     'CREATE INDEX sat_catalog_item_type_desc ON s_a_t_catalog_item_table (type, description)',
   );
+  late final Index syncQueueStatus = Index(
+    'sync_queue_status',
+    'CREATE INDEX sync_queue_status ON sync_queue_table (status)',
+  );
+  late final Index syncQueueEntidadStatus = Index(
+    'sync_queue_entidad_status',
+    'CREATE INDEX sync_queue_entidad_status ON sync_queue_table (entidad, status)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1484,9 +3502,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     productsTable,
     sATCatalogItemTable,
+    ventasLocalTable,
+    ventaItemsLocalTable,
+    syncQueueTable,
     productsNombre,
     productsCodigoBarras,
     satCatalogItemTypeDesc,
+    syncQueueStatus,
+    syncQueueEntidadStatus,
   ];
 }
 
@@ -2192,6 +4215,1000 @@ typedef $$SATCatalogItemTableTableProcessedTableManager =
       SATCatalogItemTableData,
       PrefetchHooks Function()
     >;
+typedef $$VentasLocalTableTableCreateCompanionBuilder =
+    VentasLocalTableCompanion Function({
+      required String id,
+      required String empresaId,
+      required String usuarioId,
+      Value<String?> sucursalId,
+      required String formaPago,
+      required String metodoPago,
+      required String usoCfdi,
+      required double subtotal,
+      required double iva,
+      required double total,
+      Value<String> estado,
+      Value<String?> backendId,
+      required String payloadJson,
+      Value<String?> errorMessage,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<bool> syncPending,
+      Value<int> rowid,
+    });
+typedef $$VentasLocalTableTableUpdateCompanionBuilder =
+    VentasLocalTableCompanion Function({
+      Value<String> id,
+      Value<String> empresaId,
+      Value<String> usuarioId,
+      Value<String?> sucursalId,
+      Value<String> formaPago,
+      Value<String> metodoPago,
+      Value<String> usoCfdi,
+      Value<double> subtotal,
+      Value<double> iva,
+      Value<double> total,
+      Value<String> estado,
+      Value<String?> backendId,
+      Value<String> payloadJson,
+      Value<String?> errorMessage,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<bool> syncPending,
+      Value<int> rowid,
+    });
+
+class $$VentasLocalTableTableFilterComposer
+    extends Composer<_$AppDatabase, $VentasLocalTableTable> {
+  $$VentasLocalTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get empresaId => $composableBuilder(
+    column: $table.empresaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get usuarioId => $composableBuilder(
+    column: $table.usuarioId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sucursalId => $composableBuilder(
+    column: $table.sucursalId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get formaPago => $composableBuilder(
+    column: $table.formaPago,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get metodoPago => $composableBuilder(
+    column: $table.metodoPago,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get usoCfdi => $composableBuilder(
+    column: $table.usoCfdi,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get subtotal => $composableBuilder(
+    column: $table.subtotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get iva => $composableBuilder(
+    column: $table.iva,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get backendId => $composableBuilder(
+    column: $table.backendId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get errorMessage => $composableBuilder(
+    column: $table.errorMessage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get syncPending => $composableBuilder(
+    column: $table.syncPending,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VentasLocalTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $VentasLocalTableTable> {
+  $$VentasLocalTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get empresaId => $composableBuilder(
+    column: $table.empresaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get usuarioId => $composableBuilder(
+    column: $table.usuarioId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sucursalId => $composableBuilder(
+    column: $table.sucursalId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get formaPago => $composableBuilder(
+    column: $table.formaPago,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get metodoPago => $composableBuilder(
+    column: $table.metodoPago,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get usoCfdi => $composableBuilder(
+    column: $table.usoCfdi,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get subtotal => $composableBuilder(
+    column: $table.subtotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get iva => $composableBuilder(
+    column: $table.iva,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get estado => $composableBuilder(
+    column: $table.estado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get backendId => $composableBuilder(
+    column: $table.backendId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get errorMessage => $composableBuilder(
+    column: $table.errorMessage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get syncPending => $composableBuilder(
+    column: $table.syncPending,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VentasLocalTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VentasLocalTableTable> {
+  $$VentasLocalTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get empresaId =>
+      $composableBuilder(column: $table.empresaId, builder: (column) => column);
+
+  GeneratedColumn<String> get usuarioId =>
+      $composableBuilder(column: $table.usuarioId, builder: (column) => column);
+
+  GeneratedColumn<String> get sucursalId => $composableBuilder(
+    column: $table.sucursalId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get formaPago =>
+      $composableBuilder(column: $table.formaPago, builder: (column) => column);
+
+  GeneratedColumn<String> get metodoPago => $composableBuilder(
+    column: $table.metodoPago,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get usoCfdi =>
+      $composableBuilder(column: $table.usoCfdi, builder: (column) => column);
+
+  GeneratedColumn<double> get subtotal =>
+      $composableBuilder(column: $table.subtotal, builder: (column) => column);
+
+  GeneratedColumn<double> get iva =>
+      $composableBuilder(column: $table.iva, builder: (column) => column);
+
+  GeneratedColumn<double> get total =>
+      $composableBuilder(column: $table.total, builder: (column) => column);
+
+  GeneratedColumn<String> get estado =>
+      $composableBuilder(column: $table.estado, builder: (column) => column);
+
+  GeneratedColumn<String> get backendId =>
+      $composableBuilder(column: $table.backendId, builder: (column) => column);
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get errorMessage => $composableBuilder(
+    column: $table.errorMessage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get syncPending => $composableBuilder(
+    column: $table.syncPending,
+    builder: (column) => column,
+  );
+}
+
+class $$VentasLocalTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $VentasLocalTableTable,
+          VentasLocalTableData,
+          $$VentasLocalTableTableFilterComposer,
+          $$VentasLocalTableTableOrderingComposer,
+          $$VentasLocalTableTableAnnotationComposer,
+          $$VentasLocalTableTableCreateCompanionBuilder,
+          $$VentasLocalTableTableUpdateCompanionBuilder,
+          (
+            VentasLocalTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $VentasLocalTableTable,
+              VentasLocalTableData
+            >,
+          ),
+          VentasLocalTableData,
+          PrefetchHooks Function()
+        > {
+  $$VentasLocalTableTableTableManager(
+    _$AppDatabase db,
+    $VentasLocalTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VentasLocalTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VentasLocalTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VentasLocalTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> empresaId = const Value.absent(),
+                Value<String> usuarioId = const Value.absent(),
+                Value<String?> sucursalId = const Value.absent(),
+                Value<String> formaPago = const Value.absent(),
+                Value<String> metodoPago = const Value.absent(),
+                Value<String> usoCfdi = const Value.absent(),
+                Value<double> subtotal = const Value.absent(),
+                Value<double> iva = const Value.absent(),
+                Value<double> total = const Value.absent(),
+                Value<String> estado = const Value.absent(),
+                Value<String?> backendId = const Value.absent(),
+                Value<String> payloadJson = const Value.absent(),
+                Value<String?> errorMessage = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<bool> syncPending = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VentasLocalTableCompanion(
+                id: id,
+                empresaId: empresaId,
+                usuarioId: usuarioId,
+                sucursalId: sucursalId,
+                formaPago: formaPago,
+                metodoPago: metodoPago,
+                usoCfdi: usoCfdi,
+                subtotal: subtotal,
+                iva: iva,
+                total: total,
+                estado: estado,
+                backendId: backendId,
+                payloadJson: payloadJson,
+                errorMessage: errorMessage,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                syncPending: syncPending,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String empresaId,
+                required String usuarioId,
+                Value<String?> sucursalId = const Value.absent(),
+                required String formaPago,
+                required String metodoPago,
+                required String usoCfdi,
+                required double subtotal,
+                required double iva,
+                required double total,
+                Value<String> estado = const Value.absent(),
+                Value<String?> backendId = const Value.absent(),
+                required String payloadJson,
+                Value<String?> errorMessage = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<bool> syncPending = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VentasLocalTableCompanion.insert(
+                id: id,
+                empresaId: empresaId,
+                usuarioId: usuarioId,
+                sucursalId: sucursalId,
+                formaPago: formaPago,
+                metodoPago: metodoPago,
+                usoCfdi: usoCfdi,
+                subtotal: subtotal,
+                iva: iva,
+                total: total,
+                estado: estado,
+                backendId: backendId,
+                payloadJson: payloadJson,
+                errorMessage: errorMessage,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                syncPending: syncPending,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VentasLocalTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $VentasLocalTableTable,
+      VentasLocalTableData,
+      $$VentasLocalTableTableFilterComposer,
+      $$VentasLocalTableTableOrderingComposer,
+      $$VentasLocalTableTableAnnotationComposer,
+      $$VentasLocalTableTableCreateCompanionBuilder,
+      $$VentasLocalTableTableUpdateCompanionBuilder,
+      (
+        VentasLocalTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $VentasLocalTableTable,
+          VentasLocalTableData
+        >,
+      ),
+      VentasLocalTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$VentaItemsLocalTableTableCreateCompanionBuilder =
+    VentaItemsLocalTableCompanion Function({
+      required String id,
+      required String ventaId,
+      required String productoId,
+      required String productoNombre,
+      required int cantidad,
+      required double precioUnitario,
+      required double subtotal,
+      Value<int> rowid,
+    });
+typedef $$VentaItemsLocalTableTableUpdateCompanionBuilder =
+    VentaItemsLocalTableCompanion Function({
+      Value<String> id,
+      Value<String> ventaId,
+      Value<String> productoId,
+      Value<String> productoNombre,
+      Value<int> cantidad,
+      Value<double> precioUnitario,
+      Value<double> subtotal,
+      Value<int> rowid,
+    });
+
+class $$VentaItemsLocalTableTableFilterComposer
+    extends Composer<_$AppDatabase, $VentaItemsLocalTableTable> {
+  $$VentaItemsLocalTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ventaId => $composableBuilder(
+    column: $table.ventaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get productoId => $composableBuilder(
+    column: $table.productoId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get productoNombre => $composableBuilder(
+    column: $table.productoNombre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get cantidad => $composableBuilder(
+    column: $table.cantidad,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get precioUnitario => $composableBuilder(
+    column: $table.precioUnitario,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get subtotal => $composableBuilder(
+    column: $table.subtotal,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VentaItemsLocalTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $VentaItemsLocalTableTable> {
+  $$VentaItemsLocalTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ventaId => $composableBuilder(
+    column: $table.ventaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get productoId => $composableBuilder(
+    column: $table.productoId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get productoNombre => $composableBuilder(
+    column: $table.productoNombre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get cantidad => $composableBuilder(
+    column: $table.cantidad,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get precioUnitario => $composableBuilder(
+    column: $table.precioUnitario,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get subtotal => $composableBuilder(
+    column: $table.subtotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VentaItemsLocalTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VentaItemsLocalTableTable> {
+  $$VentaItemsLocalTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get ventaId =>
+      $composableBuilder(column: $table.ventaId, builder: (column) => column);
+
+  GeneratedColumn<String> get productoId => $composableBuilder(
+    column: $table.productoId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get productoNombre => $composableBuilder(
+    column: $table.productoNombre,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get cantidad =>
+      $composableBuilder(column: $table.cantidad, builder: (column) => column);
+
+  GeneratedColumn<double> get precioUnitario => $composableBuilder(
+    column: $table.precioUnitario,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get subtotal =>
+      $composableBuilder(column: $table.subtotal, builder: (column) => column);
+}
+
+class $$VentaItemsLocalTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $VentaItemsLocalTableTable,
+          VentaItemsLocalTableData,
+          $$VentaItemsLocalTableTableFilterComposer,
+          $$VentaItemsLocalTableTableOrderingComposer,
+          $$VentaItemsLocalTableTableAnnotationComposer,
+          $$VentaItemsLocalTableTableCreateCompanionBuilder,
+          $$VentaItemsLocalTableTableUpdateCompanionBuilder,
+          (
+            VentaItemsLocalTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $VentaItemsLocalTableTable,
+              VentaItemsLocalTableData
+            >,
+          ),
+          VentaItemsLocalTableData,
+          PrefetchHooks Function()
+        > {
+  $$VentaItemsLocalTableTableTableManager(
+    _$AppDatabase db,
+    $VentaItemsLocalTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VentaItemsLocalTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VentaItemsLocalTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$VentaItemsLocalTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> ventaId = const Value.absent(),
+                Value<String> productoId = const Value.absent(),
+                Value<String> productoNombre = const Value.absent(),
+                Value<int> cantidad = const Value.absent(),
+                Value<double> precioUnitario = const Value.absent(),
+                Value<double> subtotal = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VentaItemsLocalTableCompanion(
+                id: id,
+                ventaId: ventaId,
+                productoId: productoId,
+                productoNombre: productoNombre,
+                cantidad: cantidad,
+                precioUnitario: precioUnitario,
+                subtotal: subtotal,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String ventaId,
+                required String productoId,
+                required String productoNombre,
+                required int cantidad,
+                required double precioUnitario,
+                required double subtotal,
+                Value<int> rowid = const Value.absent(),
+              }) => VentaItemsLocalTableCompanion.insert(
+                id: id,
+                ventaId: ventaId,
+                productoId: productoId,
+                productoNombre: productoNombre,
+                cantidad: cantidad,
+                precioUnitario: precioUnitario,
+                subtotal: subtotal,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VentaItemsLocalTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $VentaItemsLocalTableTable,
+      VentaItemsLocalTableData,
+      $$VentaItemsLocalTableTableFilterComposer,
+      $$VentaItemsLocalTableTableOrderingComposer,
+      $$VentaItemsLocalTableTableAnnotationComposer,
+      $$VentaItemsLocalTableTableCreateCompanionBuilder,
+      $$VentaItemsLocalTableTableUpdateCompanionBuilder,
+      (
+        VentaItemsLocalTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $VentaItemsLocalTableTable,
+          VentaItemsLocalTableData
+        >,
+      ),
+      VentaItemsLocalTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$SyncQueueTableTableCreateCompanionBuilder =
+    SyncQueueTableCompanion Function({
+      required String id,
+      required String entidad,
+      required String tipo,
+      required String payloadJson,
+      Value<String> status,
+      Value<int> retryCount,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<String?> lastError,
+      Value<int> rowid,
+    });
+typedef $$SyncQueueTableTableUpdateCompanionBuilder =
+    SyncQueueTableCompanion Function({
+      Value<String> id,
+      Value<String> entidad,
+      Value<String> tipo,
+      Value<String> payloadJson,
+      Value<String> status,
+      Value<int> retryCount,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<String?> lastError,
+      Value<int> rowid,
+    });
+
+class $$SyncQueueTableTableFilterComposer
+    extends Composer<_$AppDatabase, $SyncQueueTableTable> {
+  $$SyncQueueTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entidad => $composableBuilder(
+    column: $table.entidad,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SyncQueueTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $SyncQueueTableTable> {
+  $$SyncQueueTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entidad => $composableBuilder(
+    column: $table.entidad,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tipo => $composableBuilder(
+    column: $table.tipo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SyncQueueTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SyncQueueTableTable> {
+  $$SyncQueueTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get entidad =>
+      $composableBuilder(column: $table.entidad, builder: (column) => column);
+
+  GeneratedColumn<String> get tipo =>
+      $composableBuilder(column: $table.tipo, builder: (column) => column);
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
+}
+
+class $$SyncQueueTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SyncQueueTableTable,
+          SyncQueueTableData,
+          $$SyncQueueTableTableFilterComposer,
+          $$SyncQueueTableTableOrderingComposer,
+          $$SyncQueueTableTableAnnotationComposer,
+          $$SyncQueueTableTableCreateCompanionBuilder,
+          $$SyncQueueTableTableUpdateCompanionBuilder,
+          (
+            SyncQueueTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $SyncQueueTableTable,
+              SyncQueueTableData
+            >,
+          ),
+          SyncQueueTableData,
+          PrefetchHooks Function()
+        > {
+  $$SyncQueueTableTableTableManager(
+    _$AppDatabase db,
+    $SyncQueueTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncQueueTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncQueueTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SyncQueueTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> entidad = const Value.absent(),
+                Value<String> tipo = const Value.absent(),
+                Value<String> payloadJson = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> retryCount = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncQueueTableCompanion(
+                id: id,
+                entidad: entidad,
+                tipo: tipo,
+                payloadJson: payloadJson,
+                status: status,
+                retryCount: retryCount,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                lastError: lastError,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String entidad,
+                required String tipo,
+                required String payloadJson,
+                Value<String> status = const Value.absent(),
+                Value<int> retryCount = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<String?> lastError = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncQueueTableCompanion.insert(
+                id: id,
+                entidad: entidad,
+                tipo: tipo,
+                payloadJson: payloadJson,
+                status: status,
+                retryCount: retryCount,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                lastError: lastError,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SyncQueueTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SyncQueueTableTable,
+      SyncQueueTableData,
+      $$SyncQueueTableTableFilterComposer,
+      $$SyncQueueTableTableOrderingComposer,
+      $$SyncQueueTableTableAnnotationComposer,
+      $$SyncQueueTableTableCreateCompanionBuilder,
+      $$SyncQueueTableTableUpdateCompanionBuilder,
+      (
+        SyncQueueTableData,
+        BaseReferences<_$AppDatabase, $SyncQueueTableTable, SyncQueueTableData>,
+      ),
+      SyncQueueTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2200,4 +5217,10 @@ class $AppDatabaseManager {
       $$ProductsTableTableTableManager(_db, _db.productsTable);
   $$SATCatalogItemTableTableTableManager get sATCatalogItemTable =>
       $$SATCatalogItemTableTableTableManager(_db, _db.sATCatalogItemTable);
+  $$VentasLocalTableTableTableManager get ventasLocalTable =>
+      $$VentasLocalTableTableTableManager(_db, _db.ventasLocalTable);
+  $$VentaItemsLocalTableTableTableManager get ventaItemsLocalTable =>
+      $$VentaItemsLocalTableTableTableManager(_db, _db.ventaItemsLocalTable);
+  $$SyncQueueTableTableTableManager get syncQueueTable =>
+      $$SyncQueueTableTableTableManager(_db, _db.syncQueueTable);
 }

@@ -8,6 +8,10 @@ import '../../../products/presentation/bloc/products_list_state.dart';
 import '../../../products/presentation/bloc/search_bloc.dart';
 import '../../../products/presentation/bloc/search_event.dart';
 import '../../../products/presentation/bloc/search_state.dart';
+import '../../../ventas/data/models/create_venta_request.dart';
+import '../../../ventas/presentation/bloc/venta_bloc.dart';
+import '../../../ventas/presentation/bloc/venta_event.dart';
+import '../../../ventas/presentation/bloc/venta_state.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
 import '../bloc/cart_state.dart';
@@ -22,6 +26,22 @@ class POSPage extends StatefulWidget {
 class _POSPageState extends State<POSPage> {
   final _searchController = TextEditingController();
   String _currentQuery = '';
+
+  static const _formasPago = [
+    {'codigo': '01', 'nombre': 'Efectivo'},
+    {'codigo': '03', 'nombre': 'Tarjeta de crédito'},
+    {'codigo': '04', 'nombre': 'Tarjeta de débito'},
+    {'codigo': '05', 'nombre': 'Monedero electrónico'},
+    {'codigo': '28', 'nombre': 'Transferencia'},
+  ];
+
+  static const _usosCfdi = [
+    {'codigo': 'G01', 'nombre': 'Adquisición de mercancías'},
+    {'codigo': 'G02', 'nombre': 'Gastos en general'},
+    {'codigo': 'G03', 'nombre': 'Gastos en combustibles'},
+    {'codigo': 'D01', 'nombre': 'Equipos de cómputo'},
+    {'codigo': 'I01', 'nombre': 'Construcciones'},
+  ];
 
   @override
   void initState() {
@@ -65,10 +85,26 @@ class _POSPageState extends State<POSPage> {
     context.read<CartBloc>().add(CartQuantityDecremented(productId: productId));
   }
 
+  void _removeFromCart(String productId) {
+    context.read<CartBloc>().add(CartProductRemoved(productId: productId));
+  }
+
   void _onCheckout() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Funcionalidad pendiente'),
+    final cartState = context.read<CartBloc>().state;
+    if (cartState.items.isEmpty) return;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: context.read<CartBloc>()),
+          BlocProvider.value(value: context.read<VentaBloc>()),
+        ],
+        child: _CheckoutModal(
+          formasPago: _formasPago,
+          usosCfdi: _usosCfdi,
+        ),
       ),
     );
   }
@@ -88,38 +124,50 @@ class _POSPageState extends State<POSPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Punto de Venta'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: 'Buscar producto',
-                prefixIcon: const Icon(Icons.search),
-                border: const OutlineInputBorder(),
-                suffixIcon: _currentQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: _onSearchCleared,
-                      )
-                    : null,
-              ),
-              onChanged: _onSearchChanged,
+    return BlocListener<VentaBloc, VentaState>(
+      listener: (context, state) {
+        if (state is VentaError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
             ),
-          ),
-          Expanded(
-            child: _currentQuery.isEmpty
-                ? _buildProductList()
-                : _buildSearchResults(),
-          ),
-        ],
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Punto de Venta'),
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  labelText: 'Buscar producto',
+                  prefixIcon: const Icon(Icons.search),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: _currentQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: _onSearchCleared,
+                        )
+                      : null,
+                ),
+                onChanged: _onSearchChanged,
+              ),
+            ),
+            Expanded(
+              child: _currentQuery.isEmpty
+                  ? _buildProductList()
+                  : _buildSearchResults(),
+            ),
+          ],
+        ),
+        bottomNavigationBar: _buildCartSummaryBar(),
       ),
-      bottomNavigationBar: _buildCartSummaryBar(),
     );
   }
 
@@ -316,10 +364,6 @@ class _POSPageState extends State<POSPage> {
         );
       },
     );
-  }
-
-  void _removeFromCart(String productId) {
-    context.read<CartBloc>().add(CartProductRemoved(productId: productId));
   }
 
   Widget _buildCartBottomSheet(BuildContext context) {
@@ -530,5 +574,233 @@ class _POSPageState extends State<POSPage> {
         );
       },
     );
+  }
+}
+
+class _CheckoutModal extends StatefulWidget {
+  final List<Map<String, String>> formasPago;
+  final List<Map<String, String>> usosCfdi;
+
+  const _CheckoutModal({
+    required this.formasPago,
+    required this.usosCfdi,
+  });
+
+  @override
+  State<_CheckoutModal> createState() => _CheckoutModalState();
+}
+
+class _CheckoutModalState extends State<_CheckoutModal> {
+  String _selectedFormaPago = '01';
+  String _selectedUsoCfdi = 'G01';
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<VentaBloc, VentaState>(
+      listener: (context, state) {
+        if (state is VentaSuccess) {
+          Navigator.pop(context);
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              fullscreenDialog: true,
+              builder: (_) => VentaSuccessPage(
+                total: state.total,
+                formaPago: state.formaPago,
+                ventaId: state.ventaId,
+              ),
+            ),
+          );
+        } else if (state is VentaError) {
+          Navigator.pop(context);
+        }
+      },
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.4,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) {
+          return BlocBuilder<CartBloc, CartState>(
+            builder: (context, cartState) {
+              return Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        'Confirmar venta',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    Expanded(
+                      child: ListView(
+                        controller: scrollController,
+                        padding: const EdgeInsets.all(16),
+                        children: [
+                          const Text(
+                            'Forma de pago',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          ...widget.formasPago.map((fp) => RadioListTile<String>(
+                                title: Text(fp['nombre']!),
+                                value: fp['codigo']!,
+                                groupValue: _selectedFormaPago,
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() => _selectedFormaPago = value);
+                                  }
+                                },
+                              )),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Uso de CFDI',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          ...widget.usosCfdi.map((uc) => RadioListTile<String>(
+                                title: Text(uc['nombre']!),
+                                value: uc['codigo']!,
+                                groupValue: _selectedUsoCfdi,
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() => _selectedUsoCfdi = value);
+                                  }
+                                },
+                              )),
+                          const Divider(height: 32),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Productos:'),
+                              Text('${cartState.totalItems}'),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Total:',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                '\$${cartState.subtotal.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: BlocBuilder<VentaBloc, VentaState>(
+                        builder: (context, ventaState) {
+                          final isLoading = ventaState is VentaLoading;
+                          return SizedBox(
+                            width: double.infinity,
+                            height: 48,
+                            child: ElevatedButton(
+                              onPressed: isLoading || cartState.items.isEmpty
+                                  ? null
+                                  : () => _confirmarVenta(context, cartState),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.onPrimary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: isLoading
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Confirmar venta',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  void _confirmarVenta(BuildContext context, CartState cartState) {
+    final session = context.read<VentaBloc>();
+    final formaPagoNombre = widget.formasPago
+        .firstWhere((fp) => fp['codigo'] == _selectedFormaPago)['nombre'];
+
+    final items = cartState.items.map((item) {
+      return CreateVentaItemRequest(
+        productoId: item.product.id,
+        cantidad: item.quantity,
+        precioUnitario: item.product.precioVenta,
+      );
+    }).toList();
+
+    final subtotal = cartState.subtotal;
+    final iva = 0.0;
+    final total = subtotal + iva;
+
+    session.add(VentaConfirmar(
+      empresaId: '',
+      usuarioId: '',
+      formaPago: _selectedFormaPago,
+      metodoPago: 'PUE',
+      usoCfdi: _selectedUsoCfdi,
+      items: items,
+      subtotal: subtotal,
+      iva: iva,
+      total: total,
+    ));
   }
 }
