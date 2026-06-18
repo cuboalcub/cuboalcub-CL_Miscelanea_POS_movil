@@ -77,9 +77,11 @@ class AuthRepositoryImpl implements AuthRepository {
         token: loginResponse.token,
         empresaId: loginResponse.empresaId,
         usuarioId: loginResponse.usuarioId,
+        activeSucursalId: loginResponse.sucursalId,
       );
 
       await _sessionManager.saveSession(authResult);
+      await _sessionManager.ensureSucursal();
 
       AppLogger.info('[AUTH] Login successful for: $email');
 

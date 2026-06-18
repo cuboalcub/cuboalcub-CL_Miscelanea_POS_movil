@@ -24,7 +24,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -43,6 +43,33 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 5) {
             await m.createTable(syncQueueTable);
+          }
+          if (from < 6) {
+            final columns = await customSelect(
+              "PRAGMA table_info(sync_queue_table)",
+            ).get();
+            final existing = columns.map((c) => c.data['name'] as String).toSet();
+            if (!existing.contains('conflict_resolution')) {
+              await customStatement(
+                'ALTER TABLE sync_queue_table ADD COLUMN conflict_resolution TEXT',
+              );
+            }
+            if (!existing.contains('server_snapshot')) {
+              await customStatement(
+                'ALTER TABLE sync_queue_table ADD COLUMN server_snapshot TEXT',
+              );
+            }
+          }
+          if (from < 7) {
+            final columns = await customSelect(
+              "PRAGMA table_info(sync_queue_table)",
+            ).get();
+            final existing = columns.map((c) => c.data['name'] as String).toSet();
+            if (!existing.contains('error_code')) {
+              await customStatement(
+                'ALTER TABLE sync_queue_table ADD COLUMN error_code TEXT',
+              );
+            }
           }
         },
       );
@@ -159,6 +186,49 @@ class AppDatabase extends _$AppDatabase {
     return rows.length;
   }
 
+  Future<List<VentasLocalTableData>> getAllVentasLocales() {
+    return (select(ventasLocalTable)
+          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+        .get();
+  }
+
+  // --- Products local query methods ---
+
+  Future<int> getProductsLocalCount() async {
+    final query = select(productsTable)
+      ..where((t) => t.activo.equals(true));
+    final rows = await query.get();
+    return rows.length;
+  }
+
+  Future<List<ProductsTableData>> getProductsLocal({
+    int limit = 20,
+    int offset = 0,
+  }) {
+    return (select(productsTable)
+          ..where((t) => t.activo.equals(true))
+          ..orderBy([(t) => OrderingTerm.asc(t.nombre)])
+          ..limit(limit, offset: offset))
+        .get();
+  }
+
+  Future<List<ProductsTableData>> searchProductsLocal(String query) {
+    final pattern = '%$query%';
+    return (select(productsTable)
+          ..where((t) =>
+              t.nombre.like(pattern) | t.codigoBarras.like(pattern))
+          ..orderBy([(t) => OrderingTerm.asc(t.nombre)]))
+        .get();
+  }
+
+  Future<void> upsertProducts(List<ProductsTableCompanion> products) {
+    return transaction(() async {
+      for (final product in products) {
+        await into(productsTable).insertOnConflictUpdate(product);
+      }
+    });
+  }
+
   // --- SyncQueue methods ---
 
   Future<int> insertSyncOperation(SyncQueueTableCompanion operation) {
@@ -171,6 +241,32 @@ class AppDatabase extends _$AppDatabase {
           ..orderBy([(t) => OrderingTerm.asc(t.createdAt)])
           ..limit(limit))
         .get();
+  }
+
+  static const _retryableErrorCodes = {
+    'NETWORK_ERROR',
+    'TIMEOUT',
+    '408',
+    '500',
+    '502',
+    '503',
+    '504',
+    'UNKNOWN',
+  };
+
+  Future<List<SyncQueueTableData>> getRetryableOperations({
+    int limit = 20,
+    int maxRetries = 5,
+  }) async {
+    final query = select(syncQueueTable)
+      ..where((t) =>
+          (t.status.equals('pending')) |
+          (t.status.equals('error') &
+              t.retryCount.isSmallerThanValue(maxRetries) &
+              t.errorCode.isIn(_retryableErrorCodes)))
+      ..orderBy([(t) => OrderingTerm.asc(t.createdAt)])
+      ..limit(limit);
+    return query.get();
   }
 
   Future<void> markOperationsAsSyncing(List<String> ids) {
@@ -195,7 +291,7 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  Future<void> markOperationAsError(String id, String? error) async {
+  Future<void> markOperationAsError(String id, String? error, {String? errorCode}) async {
     final current = await (select(syncQueueTable)
           ..where((t) => t.id.equals(id)))
         .getSingleOrNull();
@@ -207,6 +303,7 @@ class AppDatabase extends _$AppDatabase {
       SyncQueueTableCompanion(
         status: const Value('error'),
         lastError: Value(error),
+        errorCode: Value(errorCode),
         retryCount: Value(newRetryCount),
         updatedAt: Value(DateTime.now()),
       ),
@@ -231,6 +328,22 @@ class AppDatabase extends _$AppDatabase {
       ..where((t) => t.status.equals('error'));
     final rows = await query.get();
     return rows.length;
+  }
+
+  Future<void> markOperationConflictResolved(
+    String id, {
+    required String resolution,
+    String? serverSnapshot,
+  }) {
+    return (update(syncQueueTable)
+          ..where((t) => t.id.equals(id)))
+        .write(
+      SyncQueueTableCompanion(
+        conflictResolution: Value(resolution),
+        serverSnapshot: Value(serverSnapshot),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 }
 

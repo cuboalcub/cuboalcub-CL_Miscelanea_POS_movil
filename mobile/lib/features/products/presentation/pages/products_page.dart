@@ -20,6 +20,7 @@ class _ProductsPageState extends State<ProductsPage> {
   final _searchController = TextEditingController();
   final _scrollController = ScrollController();
   String _currentQuery = '';
+  BuildContext? _blocContext;
 
   @override
   void initState() {
@@ -38,21 +39,21 @@ class _ProductsPageState extends State<ProductsPage> {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       print('[PRODUCTS LIST] Scroll near end - dispatching LoadMore');
-      context.read<ProductsListBloc>().add(const ProductsListLoadMore());
+      _blocContext?.read<ProductsListBloc>().add(const ProductsListLoadMore());
     }
   }
 
   void _onSearchChanged(String value) {
     final query = value.trim();
-    _currentQuery = query;
+    setState(() => _currentQuery = query);
     print('[SEARCH UI] Dispatching SearchQueryChanged');
-    context.read<SearchBloc>().add(SearchQueryChanged(query: value));
+    _blocContext?.read<SearchBloc>().add(SearchQueryChanged(query: value));
   }
 
   void _onSearchCleared() {
     _searchController.clear();
-    _currentQuery = '';
-    context.read<SearchBloc>().add(const SearchCleared());
+    setState(() => _currentQuery = '');
+    _blocContext?.read<SearchBloc>().add(const SearchCleared());
   }
 
   @override
@@ -75,6 +76,7 @@ class _ProductsPageState extends State<ProductsPage> {
       ],
       child: Builder(
         builder: (context) {
+          _blocContext = context;
           return Scaffold(
             appBar: AppBar(
               title: const Text('Productos'),

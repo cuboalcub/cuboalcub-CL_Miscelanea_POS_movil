@@ -1,4 +1,5 @@
 import '../../data/models/create_venta_request.dart';
+import '../entities/venta.dart';
 
 abstract class VentaRepository {
   Future<String> confirmarVenta({
@@ -14,6 +15,7 @@ abstract class VentaRepository {
     required double total,
   });
 
+  Future<List<Venta>> getAllVentasLocal();
   Future<List<Map<String, dynamic>>> getVentasPendientesSync();
   Future<void> markVentaSynced(String localId, String backendId);
   Future<void> markVentaFailed(String localId, String? error);

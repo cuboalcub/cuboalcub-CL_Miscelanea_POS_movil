@@ -10,56 +10,85 @@ class ProductsRepositoryImpl implements ProductsRepository {
   final AppDatabase _database;
   final ProductApiService _apiService;
 
-  List<Product> _cachedProducts = [];
-  DateTime? _lastFetchTime;
-  static const _cacheMaxAge = Duration(minutes: 5);
-
   ProductsRepositoryImpl({
     required AppDatabase database,
     required ProductApiService apiService,
   })  : _database = database,
         _apiService = apiService;
 
-  Future<List<Product>> _fetchProductsFromApi() async {
-    if (_cachedProducts.isNotEmpty && _lastFetchTime != null) {
-      final age = DateTime.now().difference(_lastFetchTime!);
-      if (age < _cacheMaxAge) {
-        return _cachedProducts;
-      }
-    }
+  Future<void> _ensureProductsInDb() async {
+    final count = await _database.getProductsLocalCount();
+    if (count > 0) return;
 
     try {
       final models = await _apiService.getProducts();
-      _cachedProducts = models.map((m) => m.toEntity()).toList();
-      _lastFetchTime = DateTime.now();
-      return _cachedProducts;
+      final companions = models.map((m) {
+        final e = m.toEntity();
+        return ProductsTableCompanion.insert(
+          id: e.id,
+          sku: Value(e.sku),
+          codigoBarras: Value(e.codigoBarras),
+          nombre: e.nombre,
+          descripcion: Value(e.descripcion),
+          precioVenta: e.precioVenta,
+          precioCompra: e.precioCompra,
+          satClave: Value(e.satClave),
+          satUnidad: Value(e.satUnidad),
+          categoriaId: Value(e.categoriaId),
+          ivaIncluido: e.ivaIncluido,
+          activo: e.activo,
+          empresaId: e.empresaId,
+          createdAt: e.createdAt,
+          updatedAt: e.updatedAt,
+          syncPending: Value(e.syncPending),
+        );
+      }).toList();
+
+      await _database.upsertProducts(companions);
+      AppLogger.info('[PRODUCTS REPO] Synced ${companions.length} products to local DB');
     } catch (e) {
-      AppLogger.error('[PRODUCTS REPO] API fetch failed: $e');
-      if (_cachedProducts.isNotEmpty) {
-        return _cachedProducts;
-      }
-      rethrow;
+      AppLogger.error('[PRODUCTS REPO] Failed to populate local DB: $e');
     }
   }
 
-  void invalidateCache() {
-    _cachedProducts = [];
-    _lastFetchTime = null;
+  Product _mapToEntity(ProductsTableData row) {
+    return Product(
+      id: row.id,
+      sku: row.sku,
+      codigoBarras: row.codigoBarras,
+      nombre: row.nombre,
+      descripcion: row.descripcion,
+      precioVenta: row.precioVenta,
+      precioCompra: row.precioCompra,
+      satClave: row.satClave,
+      satUnidad: row.satUnidad,
+      categoriaId: row.categoriaId,
+      ivaIncluido: row.ivaIncluido,
+      activo: row.activo,
+      empresaId: row.empresaId,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      syncPending: row.syncPending,
+    );
   }
 
   @override
   Future<List<Product>> getAllProducts() async {
-    return _fetchProductsFromApi();
+    await _ensureProductsInDb();
+    final rows = await (_database.select(_database.productsTable)
+          ..where((t) => t.activo.equals(true))
+          ..orderBy([(t) => OrderingTerm.asc(t.nombre)]))
+        .get();
+    return rows.map(_mapToEntity).toList();
   }
 
   @override
   Future<Product?> getProductById(String id) async {
     try {
-      final products = await _fetchProductsFromApi();
-      for (final p in products) {
-        if (p.id == id) return p;
-      }
-      return null;
+      final row = await (_database.select(_database.productsTable)
+            ..where((t) => t.id.equals(id)))
+          .getSingleOrNull();
+      return row != null ? _mapToEntity(row) : null;
     } catch (e) {
       return null;
     }
@@ -136,27 +165,6 @@ class ProductsRepositoryImpl implements ProductsRepository {
         .write(const ProductsTableCompanion(syncPending: Value(false)));
   }
 
-  Product _mapToEntity(ProductsTableData row) {
-    return Product(
-      id: row.id,
-      sku: row.sku,
-      codigoBarras: row.codigoBarras,
-      nombre: row.nombre,
-      descripcion: row.descripcion,
-      precioVenta: row.precioVenta,
-      precioCompra: row.precioCompra,
-      satClave: row.satClave,
-      satUnidad: row.satUnidad,
-      categoriaId: row.categoriaId,
-      ivaIncluido: row.ivaIncluido,
-      activo: row.activo,
-      empresaId: row.empresaId,
-      createdAt: row.createdAt,
-      updatedAt: row.updatedAt,
-      syncPending: row.syncPending,
-    );
-  }
-
   @override
   Future<List<Product>> searchProducts(String query) async {
     final stopwatch = Stopwatch()..start();
@@ -167,17 +175,13 @@ class ProductsRepositoryImpl implements ProductsRepository {
       return [];
     }
 
+    await _ensureProductsInDb();
+
     try {
-      final products = await _fetchProductsFromApi();
+      final rows = await _database.searchProductsLocal(normalizedQuery);
+      final results = rows.map(_mapToEntity).toList();
 
-      final filtered = products.where((p) {
-        final nombre = p.nombre.toLowerCase();
-        final barcode = p.codigoBarras?.toLowerCase() ?? '';
-        return nombre.contains(normalizedQuery) ||
-            barcode.contains(normalizedQuery);
-      }).toList();
-
-      filtered.sort((a, b) {
+      results.sort((a, b) {
         final aBarcode = a.codigoBarras?.toLowerCase() ?? '';
         final bBarcode = b.codigoBarras?.toLowerCase() ?? '';
         final aNombre = a.nombre.toLowerCase();
@@ -207,8 +211,8 @@ class ProductsRepositoryImpl implements ProductsRepository {
       });
 
       stopwatch.stop();
-      AppLogger.debug('[PRODUCTS REPO] searchProducts: ${filtered.length} results in ${stopwatch.elapsedMilliseconds}ms');
-      return filtered;
+      AppLogger.debug('[PRODUCTS REPO] searchProducts: ${results.length} results in ${stopwatch.elapsedMilliseconds}ms');
+      return results;
     } catch (e) {
       stopwatch.stop();
       AppLogger.error('[PRODUCTS REPO] searchProducts failed: $e');
@@ -221,16 +225,11 @@ class ProductsRepositoryImpl implements ProductsRepository {
     int limit = 20,
     int offset = 0,
   }) async {
+    await _ensureProductsInDb();
+
     try {
-      final allProducts = await _fetchProductsFromApi();
-      final activeProducts = allProducts.where((p) => p.activo).toList();
-      activeProducts.sort((a, b) => a.nombre.compareTo(b.nombre));
-
-      final start = offset.clamp(0, activeProducts.length);
-      final end = (start + limit).clamp(0, activeProducts.length);
-
-      if (start >= activeProducts.length) return [];
-      return activeProducts.sublist(start, end);
+      final rows = await _database.getProductsLocal(limit: limit, offset: offset);
+      return rows.map(_mapToEntity).toList();
     } catch (e) {
       AppLogger.error('[PRODUCTS REPO] getProducts failed: $e');
       rethrow;
@@ -239,6 +238,34 @@ class ProductsRepositoryImpl implements ProductsRepository {
 
   @override
   Future<void> syncProductsDelta() async {
-    invalidateCache();
+    try {
+      final models = await _apiService.getProducts();
+      final companions = models.map((m) {
+        final e = m.toEntity();
+        return ProductsTableCompanion.insert(
+          id: e.id,
+          sku: Value(e.sku),
+          codigoBarras: Value(e.codigoBarras),
+          nombre: e.nombre,
+          descripcion: Value(e.descripcion),
+          precioVenta: e.precioVenta,
+          precioCompra: e.precioCompra,
+          satClave: Value(e.satClave),
+          satUnidad: Value(e.satUnidad),
+          categoriaId: Value(e.categoriaId),
+          ivaIncluido: e.ivaIncluido,
+          activo: e.activo,
+          empresaId: e.empresaId,
+          createdAt: e.createdAt,
+          updatedAt: e.updatedAt,
+          syncPending: Value(e.syncPending),
+        );
+      }).toList();
+
+      await _database.upsertProducts(companions);
+      AppLogger.info('[PRODUCTS REPO] syncProductsDelta: upserted ${companions.length} products');
+    } catch (e) {
+      AppLogger.error('[PRODUCTS REPO] syncProductsDelta failed: $e');
+    }
   }
 }

@@ -7,6 +7,7 @@ import '../database/app_database.dart';
 import '../network/dio_logging_interceptor.dart';
 import '../services/session_manager.dart';
 import '../services/sync_service.dart';
+import '../services/sync_status_service.dart';
 import '../services/sync_worker.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
@@ -21,6 +22,7 @@ import '../../features/ventas/data/datasources/venta_api_service.dart';
 import '../../features/ventas/data/repositories/venta_repository_impl.dart';
 import '../../features/ventas/domain/repositories/venta_repository.dart';
 import '../../features/ventas/presentation/bloc/venta_bloc.dart';
+import '../../features/ventas/presentation/bloc/ventas_historial_bloc.dart';
 import '../../features/sync/data/sat_sync_service.dart';
 import '../../features/sync/data/catalog_sync_service.dart';
 
@@ -69,7 +71,7 @@ void _registerDatabase() {
 void _registerServices() {
   if (!sl.isRegistered<SessionManager>()) {
     sl.registerLazySingleton<SessionManager>(
-      () => SessionManager(),
+      () => SessionManager(dio: sl<Dio>()),
     );
   }
 
@@ -102,6 +104,15 @@ void _registerServices() {
         database: sl<AppDatabase>(),
         dio: sl<Dio>(),
         sessionManager: sl<SessionManager>(),
+        statusService: sl<SyncStatusService>(),
+      ),
+    );
+  }
+
+  if (!sl.isRegistered<SyncStatusService>()) {
+    sl.registerLazySingleton<SyncStatusService>(
+      () => SyncStatusService(
+        database: sl<AppDatabase>(),
       ),
     );
   }
@@ -154,7 +165,7 @@ void _registerRepositories() {
     sl.registerLazySingleton<VentaRepository>(
       () => VentaRepositoryImpl(
         database: sl<AppDatabase>(),
-        syncService: sl<SyncService>(),
+        ventaApiService: sl<VentaApiService>(),
       ),
     );
   }
@@ -187,5 +198,9 @@ void _registerBlocs() {
       ventaRepository: sl<VentaRepository>(),
       syncService: sl<SyncService>(),
     ),
+  );
+
+  sl.registerFactory<VentasHistorialBloc>(
+    () => VentasHistorialBloc(ventaRepository: sl<VentaRepository>()),
   );
 }

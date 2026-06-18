@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../ventas/presentation/bloc/venta_bloc.dart';
 import '../../../ventas/presentation/bloc/venta_event.dart';
-import '../bloc/cart_event.dart';
 import '../bloc/cart_bloc.dart';
+import '../bloc/cart_event.dart';
 
 class VentaSuccessPage extends StatefulWidget {
   final double total;
   final String formaPago;
   final String ventaId;
+  final VentaBloc? ventaBloc;
+  final CartBloc? cartBloc;
 
   const VentaSuccessPage({
     super.key,
     required this.total,
     required this.formaPago,
     required this.ventaId,
+    this.ventaBloc,
+    this.cartBloc,
   });
 
   @override
@@ -69,8 +72,8 @@ class _VentaSuccessPageState extends State<VentaSuccessPage>
   }
 
   void _continuar(BuildContext context) {
-    context.read<VentaBloc>().add(const VentaReset());
-    context.read<CartBloc>().add(const CartCleared());
+    widget.ventaBloc?.add(const VentaReset());
+    widget.cartBloc?.add(const CartCleared());
     Navigator.of(context).pop();
   }
 
