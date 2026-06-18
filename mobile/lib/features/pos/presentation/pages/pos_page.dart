@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/injection_container.dart';
+import '../../../../core/services/session_manager.dart';
+import '../../../../core/services/sync_status_service.dart';
+import '../../../../core/widgets/sync_status_indicator.dart';
 import '../../../products/domain/entities/product.dart';
 import '../../../products/presentation/bloc/products_list_bloc.dart';
 import '../../../products/presentation/bloc/products_list_event.dart';
@@ -12,6 +16,7 @@ import '../../../ventas/data/models/create_venta_request.dart';
 import '../../../ventas/presentation/bloc/venta_bloc.dart';
 import '../../../ventas/presentation/bloc/venta_event.dart';
 import '../../../ventas/presentation/bloc/venta_state.dart';
+import 'venta_success_page.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
 import '../bloc/cart_state.dart';
@@ -138,6 +143,9 @@ class _POSPageState extends State<POSPage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Punto de Venta'),
+          actions: [
+            SyncStatusIndicator(syncStatusService: sl<SyncStatusService>()),
+          ],
         ),
         body: Column(
           children: [
@@ -599,6 +607,8 @@ class _CheckoutModalState extends State<_CheckoutModal> {
     return BlocListener<VentaBloc, VentaState>(
       listener: (context, state) {
         if (state is VentaSuccess) {
+          final ventaBloc = context.read<VentaBloc>();
+          final cartBloc = context.read<CartBloc>();
           Navigator.pop(context);
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -607,6 +617,8 @@ class _CheckoutModalState extends State<_CheckoutModal> {
                 total: state.total,
                 formaPago: state.formaPago,
                 ventaId: state.ventaId,
+                ventaBloc: ventaBloc,
+                cartBloc: cartBloc,
               ),
             ),
           );
@@ -775,9 +787,9 @@ class _CheckoutModalState extends State<_CheckoutModal> {
   }
 
   void _confirmarVenta(BuildContext context, CartState cartState) {
-    final session = context.read<VentaBloc>();
-    final formaPagoNombre = widget.formasPago
-        .firstWhere((fp) => fp['codigo'] == _selectedFormaPago)['nombre'];
+    final bloc = context.read<VentaBloc>();
+    final sessionManager = sl<SessionManager>();
+    final session = sessionManager.session;
 
     final items = cartState.items.map((item) {
       return CreateVentaItemRequest(
@@ -791,9 +803,10 @@ class _CheckoutModalState extends State<_CheckoutModal> {
     final iva = 0.0;
     final total = subtotal + iva;
 
-    session.add(VentaConfirmar(
-      empresaId: '',
-      usuarioId: '',
+    bloc.add(VentaConfirmar(
+      empresaId: session?.empresaId ?? '',
+      usuarioId: session?.usuarioId ?? '',
+      sucursalId: session?.activeSucursalId,
       formaPago: _selectedFormaPago,
       metodoPago: 'PUE',
       usoCfdi: _selectedUsoCfdi,

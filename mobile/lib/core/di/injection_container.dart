@@ -7,6 +7,7 @@ import '../database/app_database.dart';
 import '../network/dio_logging_interceptor.dart';
 import '../services/session_manager.dart';
 import '../services/sync_service.dart';
+import '../services/sync_status_service.dart';
 import '../services/sync_worker.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
@@ -69,7 +70,7 @@ void _registerDatabase() {
 void _registerServices() {
   if (!sl.isRegistered<SessionManager>()) {
     sl.registerLazySingleton<SessionManager>(
-      () => SessionManager(),
+      () => SessionManager(dio: sl<Dio>()),
     );
   }
 
@@ -102,6 +103,15 @@ void _registerServices() {
         database: sl<AppDatabase>(),
         dio: sl<Dio>(),
         sessionManager: sl<SessionManager>(),
+        statusService: sl<SyncStatusService>(),
+      ),
+    );
+  }
+
+  if (!sl.isRegistered<SyncStatusService>()) {
+    sl.registerLazySingleton<SyncStatusService>(
+      () => SyncStatusService(
+        database: sl<AppDatabase>(),
       ),
     );
   }
@@ -154,7 +164,7 @@ void _registerRepositories() {
     sl.registerLazySingleton<VentaRepository>(
       () => VentaRepositoryImpl(
         database: sl<AppDatabase>(),
-        syncService: sl<SyncService>(),
+        ventaApiService: sl<VentaApiService>(),
       ),
     );
   }

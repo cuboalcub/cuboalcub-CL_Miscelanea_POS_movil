@@ -3003,6 +3003,39 @@ class $SyncQueueTableTable extends SyncQueueTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _errorCodeMeta = const VerificationMeta(
+    'errorCode',
+  );
+  @override
+  late final GeneratedColumn<String> errorCode = GeneratedColumn<String>(
+    'error_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _conflictResolutionMeta =
+      const VerificationMeta('conflictResolution');
+  @override
+  late final GeneratedColumn<String> conflictResolution =
+      GeneratedColumn<String>(
+        'conflict_resolution',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _serverSnapshotMeta = const VerificationMeta(
+    'serverSnapshot',
+  );
+  @override
+  late final GeneratedColumn<String> serverSnapshot = GeneratedColumn<String>(
+    'server_snapshot',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3014,6 +3047,9 @@ class $SyncQueueTableTable extends SyncQueueTable
     createdAt,
     updatedAt,
     lastError,
+    errorCode,
+    conflictResolution,
+    serverSnapshot,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3093,6 +3129,30 @@ class $SyncQueueTableTable extends SyncQueueTable
         lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
       );
     }
+    if (data.containsKey('error_code')) {
+      context.handle(
+        _errorCodeMeta,
+        errorCode.isAcceptableOrUnknown(data['error_code']!, _errorCodeMeta),
+      );
+    }
+    if (data.containsKey('conflict_resolution')) {
+      context.handle(
+        _conflictResolutionMeta,
+        conflictResolution.isAcceptableOrUnknown(
+          data['conflict_resolution']!,
+          _conflictResolutionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('server_snapshot')) {
+      context.handle(
+        _serverSnapshotMeta,
+        serverSnapshot.isAcceptableOrUnknown(
+          data['server_snapshot']!,
+          _serverSnapshotMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -3138,6 +3198,18 @@ class $SyncQueueTableTable extends SyncQueueTable
         DriftSqlType.string,
         data['${effectivePrefix}last_error'],
       ),
+      errorCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}error_code'],
+      ),
+      conflictResolution: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}conflict_resolution'],
+      ),
+      serverSnapshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}server_snapshot'],
+      ),
     );
   }
 
@@ -3158,6 +3230,9 @@ class SyncQueueTableData extends DataClass
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? lastError;
+  final String? errorCode;
+  final String? conflictResolution;
+  final String? serverSnapshot;
   const SyncQueueTableData({
     required this.id,
     required this.entidad,
@@ -3168,6 +3243,9 @@ class SyncQueueTableData extends DataClass
     required this.createdAt,
     required this.updatedAt,
     this.lastError,
+    this.errorCode,
+    this.conflictResolution,
+    this.serverSnapshot,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3182,6 +3260,15 @@ class SyncQueueTableData extends DataClass
     map['updated_at'] = Variable<DateTime>(updatedAt);
     if (!nullToAbsent || lastError != null) {
       map['last_error'] = Variable<String>(lastError);
+    }
+    if (!nullToAbsent || errorCode != null) {
+      map['error_code'] = Variable<String>(errorCode);
+    }
+    if (!nullToAbsent || conflictResolution != null) {
+      map['conflict_resolution'] = Variable<String>(conflictResolution);
+    }
+    if (!nullToAbsent || serverSnapshot != null) {
+      map['server_snapshot'] = Variable<String>(serverSnapshot);
     }
     return map;
   }
@@ -3199,6 +3286,15 @@ class SyncQueueTableData extends DataClass
       lastError: lastError == null && nullToAbsent
           ? const Value.absent()
           : Value(lastError),
+      errorCode: errorCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(errorCode),
+      conflictResolution: conflictResolution == null && nullToAbsent
+          ? const Value.absent()
+          : Value(conflictResolution),
+      serverSnapshot: serverSnapshot == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverSnapshot),
     );
   }
 
@@ -3217,6 +3313,11 @@ class SyncQueueTableData extends DataClass
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       lastError: serializer.fromJson<String?>(json['lastError']),
+      errorCode: serializer.fromJson<String?>(json['errorCode']),
+      conflictResolution: serializer.fromJson<String?>(
+        json['conflictResolution'],
+      ),
+      serverSnapshot: serializer.fromJson<String?>(json['serverSnapshot']),
     );
   }
   @override
@@ -3232,6 +3333,9 @@ class SyncQueueTableData extends DataClass
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'lastError': serializer.toJson<String?>(lastError),
+      'errorCode': serializer.toJson<String?>(errorCode),
+      'conflictResolution': serializer.toJson<String?>(conflictResolution),
+      'serverSnapshot': serializer.toJson<String?>(serverSnapshot),
     };
   }
 
@@ -3245,6 +3349,9 @@ class SyncQueueTableData extends DataClass
     DateTime? createdAt,
     DateTime? updatedAt,
     Value<String?> lastError = const Value.absent(),
+    Value<String?> errorCode = const Value.absent(),
+    Value<String?> conflictResolution = const Value.absent(),
+    Value<String?> serverSnapshot = const Value.absent(),
   }) => SyncQueueTableData(
     id: id ?? this.id,
     entidad: entidad ?? this.entidad,
@@ -3255,6 +3362,13 @@ class SyncQueueTableData extends DataClass
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     lastError: lastError.present ? lastError.value : this.lastError,
+    errorCode: errorCode.present ? errorCode.value : this.errorCode,
+    conflictResolution: conflictResolution.present
+        ? conflictResolution.value
+        : this.conflictResolution,
+    serverSnapshot: serverSnapshot.present
+        ? serverSnapshot.value
+        : this.serverSnapshot,
   );
   SyncQueueTableData copyWithCompanion(SyncQueueTableCompanion data) {
     return SyncQueueTableData(
@@ -3271,6 +3385,13 @@ class SyncQueueTableData extends DataClass
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       lastError: data.lastError.present ? data.lastError.value : this.lastError,
+      errorCode: data.errorCode.present ? data.errorCode.value : this.errorCode,
+      conflictResolution: data.conflictResolution.present
+          ? data.conflictResolution.value
+          : this.conflictResolution,
+      serverSnapshot: data.serverSnapshot.present
+          ? data.serverSnapshot.value
+          : this.serverSnapshot,
     );
   }
 
@@ -3285,7 +3406,10 @@ class SyncQueueTableData extends DataClass
           ..write('retryCount: $retryCount, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('lastError: $lastError')
+          ..write('lastError: $lastError, ')
+          ..write('errorCode: $errorCode, ')
+          ..write('conflictResolution: $conflictResolution, ')
+          ..write('serverSnapshot: $serverSnapshot')
           ..write(')'))
         .toString();
   }
@@ -3301,6 +3425,9 @@ class SyncQueueTableData extends DataClass
     createdAt,
     updatedAt,
     lastError,
+    errorCode,
+    conflictResolution,
+    serverSnapshot,
   );
   @override
   bool operator ==(Object other) =>
@@ -3314,7 +3441,10 @@ class SyncQueueTableData extends DataClass
           other.retryCount == this.retryCount &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
-          other.lastError == this.lastError);
+          other.lastError == this.lastError &&
+          other.errorCode == this.errorCode &&
+          other.conflictResolution == this.conflictResolution &&
+          other.serverSnapshot == this.serverSnapshot);
 }
 
 class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
@@ -3327,6 +3457,9 @@ class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<String?> lastError;
+  final Value<String?> errorCode;
+  final Value<String?> conflictResolution;
+  final Value<String?> serverSnapshot;
   final Value<int> rowid;
   const SyncQueueTableCompanion({
     this.id = const Value.absent(),
@@ -3338,6 +3471,9 @@ class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.lastError = const Value.absent(),
+    this.errorCode = const Value.absent(),
+    this.conflictResolution = const Value.absent(),
+    this.serverSnapshot = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SyncQueueTableCompanion.insert({
@@ -3350,6 +3486,9 @@ class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
     required DateTime createdAt,
     required DateTime updatedAt,
     this.lastError = const Value.absent(),
+    this.errorCode = const Value.absent(),
+    this.conflictResolution = const Value.absent(),
+    this.serverSnapshot = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        entidad = Value(entidad),
@@ -3367,6 +3506,9 @@ class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<String>? lastError,
+    Expression<String>? errorCode,
+    Expression<String>? conflictResolution,
+    Expression<String>? serverSnapshot,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3379,6 +3521,9 @@ class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (lastError != null) 'last_error': lastError,
+      if (errorCode != null) 'error_code': errorCode,
+      if (conflictResolution != null) 'conflict_resolution': conflictResolution,
+      if (serverSnapshot != null) 'server_snapshot': serverSnapshot,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3393,6 +3538,9 @@ class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<String?>? lastError,
+    Value<String?>? errorCode,
+    Value<String?>? conflictResolution,
+    Value<String?>? serverSnapshot,
     Value<int>? rowid,
   }) {
     return SyncQueueTableCompanion(
@@ -3405,6 +3553,9 @@ class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       lastError: lastError ?? this.lastError,
+      errorCode: errorCode ?? this.errorCode,
+      conflictResolution: conflictResolution ?? this.conflictResolution,
+      serverSnapshot: serverSnapshot ?? this.serverSnapshot,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3439,6 +3590,15 @@ class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
     if (lastError.present) {
       map['last_error'] = Variable<String>(lastError.value);
     }
+    if (errorCode.present) {
+      map['error_code'] = Variable<String>(errorCode.value);
+    }
+    if (conflictResolution.present) {
+      map['conflict_resolution'] = Variable<String>(conflictResolution.value);
+    }
+    if (serverSnapshot.present) {
+      map['server_snapshot'] = Variable<String>(serverSnapshot.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3457,6 +3617,9 @@ class SyncQueueTableCompanion extends UpdateCompanion<SyncQueueTableData> {
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('lastError: $lastError, ')
+          ..write('errorCode: $errorCode, ')
+          ..write('conflictResolution: $conflictResolution, ')
+          ..write('serverSnapshot: $serverSnapshot, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4934,6 +5097,9 @@ typedef $$SyncQueueTableTableCreateCompanionBuilder =
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<String?> lastError,
+      Value<String?> errorCode,
+      Value<String?> conflictResolution,
+      Value<String?> serverSnapshot,
       Value<int> rowid,
     });
 typedef $$SyncQueueTableTableUpdateCompanionBuilder =
@@ -4947,6 +5113,9 @@ typedef $$SyncQueueTableTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<String?> lastError,
+      Value<String?> errorCode,
+      Value<String?> conflictResolution,
+      Value<String?> serverSnapshot,
       Value<int> rowid,
     });
 
@@ -5001,6 +5170,21 @@ class $$SyncQueueTableTableFilterComposer
 
   ColumnFilters<String> get lastError => $composableBuilder(
     column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get errorCode => $composableBuilder(
+    column: $table.errorCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get conflictResolution => $composableBuilder(
+    column: $table.conflictResolution,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get serverSnapshot => $composableBuilder(
+    column: $table.serverSnapshot,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -5058,6 +5242,21 @@ class $$SyncQueueTableTableOrderingComposer
     column: $table.lastError,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get errorCode => $composableBuilder(
+    column: $table.errorCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get conflictResolution => $composableBuilder(
+    column: $table.conflictResolution,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get serverSnapshot => $composableBuilder(
+    column: $table.serverSnapshot,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SyncQueueTableTableAnnotationComposer
@@ -5099,6 +5298,19 @@ class $$SyncQueueTableTableAnnotationComposer
 
   GeneratedColumn<String> get lastError =>
       $composableBuilder(column: $table.lastError, builder: (column) => column);
+
+  GeneratedColumn<String> get errorCode =>
+      $composableBuilder(column: $table.errorCode, builder: (column) => column);
+
+  GeneratedColumn<String> get conflictResolution => $composableBuilder(
+    column: $table.conflictResolution,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get serverSnapshot => $composableBuilder(
+    column: $table.serverSnapshot,
+    builder: (column) => column,
+  );
 }
 
 class $$SyncQueueTableTableTableManager
@@ -5147,6 +5359,9 @@ class $$SyncQueueTableTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<String?> lastError = const Value.absent(),
+                Value<String?> errorCode = const Value.absent(),
+                Value<String?> conflictResolution = const Value.absent(),
+                Value<String?> serverSnapshot = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SyncQueueTableCompanion(
                 id: id,
@@ -5158,6 +5373,9 @@ class $$SyncQueueTableTableTableManager
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 lastError: lastError,
+                errorCode: errorCode,
+                conflictResolution: conflictResolution,
+                serverSnapshot: serverSnapshot,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -5171,6 +5389,9 @@ class $$SyncQueueTableTableTableManager
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<String?> lastError = const Value.absent(),
+                Value<String?> errorCode = const Value.absent(),
+                Value<String?> conflictResolution = const Value.absent(),
+                Value<String?> serverSnapshot = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SyncQueueTableCompanion.insert(
                 id: id,
@@ -5182,6 +5403,9 @@ class $$SyncQueueTableTableTableManager
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 lastError: lastError,
+                errorCode: errorCode,
+                conflictResolution: conflictResolution,
+                serverSnapshot: serverSnapshot,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

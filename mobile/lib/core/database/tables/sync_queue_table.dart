@@ -12,6 +12,9 @@ class SyncQueueTable extends Table {
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
   TextColumn get lastError => text().nullable()();
+  TextColumn get errorCode => text().nullable()();
+  TextColumn get conflictResolution => text().nullable()();
+  TextColumn get serverSnapshot => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

@@ -5,20 +5,20 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/logger.dart';
-import '../../../../core/services/sync_service.dart';
+import '../datasources/venta_api_service.dart';
 import '../models/create_venta_request.dart';
 import '../../domain/repositories/venta_repository.dart';
 
 class VentaRepositoryImpl implements VentaRepository {
   final AppDatabase _database;
-  final SyncService _syncService;
+  final VentaApiService _ventaApiService;
   static const _uuid = Uuid();
 
   VentaRepositoryImpl({
     required AppDatabase database,
-    required SyncService syncService,
+    required VentaApiService ventaApiService,
   })  : _database = database,
-        _syncService = syncService;
+        _ventaApiService = ventaApiService;
 
   @override
   Future<String> confirmarVenta({
@@ -76,16 +76,17 @@ class VentaRepositoryImpl implements VentaRepository {
     await _database.saveVentaCompleta(ventaCompanion, itemCompanions);
     AppLogger.info('[VENTA REPO] Venta $ventaId saved locally');
 
-    await _syncService.queueOperation(
-      entidad: 'ventas',
-      tipo: 'insertar',
-      payload: {
-        'venta_local_id': ventaId,
-        ...request.toJson(),
-      },
-    );
+    try {
+      final backendId = await _ventaApiService.createVenta(request);
+      if (backendId.isNotEmpty) {
+        await _database.markVentaSynced(ventaId, backendId);
+        AppLogger.info('[VENTA REPO] Venta $ventaId synced to backend: $backendId');
+      }
+    } catch (e) {
+      AppLogger.error('[VENTA REPO] Venta $ventaId API failed: $e');
+      rethrow;
+    }
 
-    AppLogger.info('[VENTA REPO] Venta $ventaId queued for sync');
     return ventaId;
   }
 

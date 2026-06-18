@@ -24,7 +24,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -43,6 +43,33 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 5) {
             await m.createTable(syncQueueTable);
+          }
+          if (from < 6) {
+            final columns = await customSelect(
+              "PRAGMA table_info(sync_queue_table)",
+            ).get();
+            final existing = columns.map((c) => c.data['name'] as String).toSet();
+            if (!existing.contains('conflict_resolution')) {
+              await customStatement(
+                'ALTER TABLE sync_queue_table ADD COLUMN conflict_resolution TEXT',
+              );
+            }
+            if (!existing.contains('server_snapshot')) {
+              await customStatement(
+                'ALTER TABLE sync_queue_table ADD COLUMN server_snapshot TEXT',
+              );
+            }
+          }
+          if (from < 7) {
+            final columns = await customSelect(
+              "PRAGMA table_info(sync_queue_table)",
+            ).get();
+            final existing = columns.map((c) => c.data['name'] as String).toSet();
+            if (!existing.contains('error_code')) {
+              await customStatement(
+                'ALTER TABLE sync_queue_table ADD COLUMN error_code TEXT',
+              );
+            }
           }
         },
       );
@@ -173,6 +200,32 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
+  static const _retryableErrorCodes = {
+    'NETWORK_ERROR',
+    'TIMEOUT',
+    '408',
+    '500',
+    '502',
+    '503',
+    '504',
+    'UNKNOWN',
+  };
+
+  Future<List<SyncQueueTableData>> getRetryableOperations({
+    int limit = 20,
+    int maxRetries = 5,
+  }) async {
+    final query = select(syncQueueTable)
+      ..where((t) =>
+          (t.status.equals('pending')) |
+          (t.status.equals('error') &
+              t.retryCount.isSmallerThanValue(maxRetries) &
+              t.errorCode.isIn(_retryableErrorCodes)))
+      ..orderBy([(t) => OrderingTerm.asc(t.createdAt)])
+      ..limit(limit);
+    return query.get();
+  }
+
   Future<void> markOperationsAsSyncing(List<String> ids) {
     return (update(syncQueueTable)
           ..where((t) => t.id.isIn(ids)))
@@ -195,7 +248,7 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  Future<void> markOperationAsError(String id, String? error) async {
+  Future<void> markOperationAsError(String id, String? error, {String? errorCode}) async {
     final current = await (select(syncQueueTable)
           ..where((t) => t.id.equals(id)))
         .getSingleOrNull();
@@ -207,6 +260,7 @@ class AppDatabase extends _$AppDatabase {
       SyncQueueTableCompanion(
         status: const Value('error'),
         lastError: Value(error),
+        errorCode: Value(errorCode),
         retryCount: Value(newRetryCount),
         updatedAt: Value(DateTime.now()),
       ),
@@ -231,6 +285,22 @@ class AppDatabase extends _$AppDatabase {
       ..where((t) => t.status.equals('error'));
     final rows = await query.get();
     return rows.length;
+  }
+
+  Future<void> markOperationConflictResolved(
+    String id, {
+    required String resolution,
+    String? serverSnapshot,
+  }) {
+    return (update(syncQueueTable)
+          ..where((t) => t.id.equals(id)))
+        .write(
+      SyncQueueTableCompanion(
+        conflictResolution: Value(resolution),
+        serverSnapshot: Value(serverSnapshot),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 }
 
