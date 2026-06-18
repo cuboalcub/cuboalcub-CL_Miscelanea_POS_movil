@@ -186,6 +186,49 @@ class AppDatabase extends _$AppDatabase {
     return rows.length;
   }
 
+  Future<List<VentasLocalTableData>> getAllVentasLocales() {
+    return (select(ventasLocalTable)
+          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+        .get();
+  }
+
+  // --- Products local query methods ---
+
+  Future<int> getProductsLocalCount() async {
+    final query = select(productsTable)
+      ..where((t) => t.activo.equals(true));
+    final rows = await query.get();
+    return rows.length;
+  }
+
+  Future<List<ProductsTableData>> getProductsLocal({
+    int limit = 20,
+    int offset = 0,
+  }) {
+    return (select(productsTable)
+          ..where((t) => t.activo.equals(true))
+          ..orderBy([(t) => OrderingTerm.asc(t.nombre)])
+          ..limit(limit, offset: offset))
+        .get();
+  }
+
+  Future<List<ProductsTableData>> searchProductsLocal(String query) {
+    final pattern = '%$query%';
+    return (select(productsTable)
+          ..where((t) =>
+              t.nombre.like(pattern) | t.codigoBarras.like(pattern))
+          ..orderBy([(t) => OrderingTerm.asc(t.nombre)]))
+        .get();
+  }
+
+  Future<void> upsertProducts(List<ProductsTableCompanion> products) {
+    return transaction(() async {
+      for (final product in products) {
+        await into(productsTable).insertOnConflictUpdate(product);
+      }
+    });
+  }
+
   // --- SyncQueue methods ---
 
   Future<int> insertSyncOperation(SyncQueueTableCompanion operation) {

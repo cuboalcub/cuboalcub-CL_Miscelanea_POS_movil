@@ -22,6 +22,7 @@ import '../../features/ventas/data/datasources/venta_api_service.dart';
 import '../../features/ventas/data/repositories/venta_repository_impl.dart';
 import '../../features/ventas/domain/repositories/venta_repository.dart';
 import '../../features/ventas/presentation/bloc/venta_bloc.dart';
+import '../../features/ventas/presentation/bloc/ventas_historial_bloc.dart';
 import '../../features/sync/data/sat_sync_service.dart';
 import '../../features/sync/data/catalog_sync_service.dart';
 
@@ -197,5 +198,9 @@ void _registerBlocs() {
       ventaRepository: sl<VentaRepository>(),
       syncService: sl<SyncService>(),
     ),
+  );
+
+  sl.registerFactory<VentasHistorialBloc>(
+    () => VentasHistorialBloc(ventaRepository: sl<VentaRepository>()),
   );
 }

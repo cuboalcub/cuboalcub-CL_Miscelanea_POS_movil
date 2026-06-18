@@ -64,7 +64,7 @@ class _POSPageState extends State<POSPage> {
 
   void _onSearchChanged(String value) {
     final query = value.trim();
-    _currentQuery = query;
+    setState(() => _currentQuery = query);
     if (query.isEmpty) {
       context.read<SearchBloc>().add(const SearchCleared());
     } else {
@@ -74,7 +74,7 @@ class _POSPageState extends State<POSPage> {
 
   void _onSearchCleared() {
     _searchController.clear();
-    _currentQuery = '';
+    setState(() => _currentQuery = '');
     context.read<SearchBloc>().add(const SearchCleared());
   }
 

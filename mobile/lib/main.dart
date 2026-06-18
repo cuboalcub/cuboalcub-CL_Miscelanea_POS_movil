@@ -17,6 +17,7 @@ import 'features/products/presentation/pages/products_page.dart';
 import 'features/pos/presentation/bloc/cart_bloc.dart';
 import 'features/ventas/presentation/bloc/venta_bloc.dart';
 import 'features/pos/presentation/pages/pos_page.dart';
+import 'features/ventas/presentation/pages/ventas_historial_page.dart';
 import 'core/services/sync_status_service.dart';
 import 'features/sync/data/sat_sync_service.dart';
 
@@ -219,6 +220,19 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const ProductsPage()),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+              _MenuCard(
+                icon: Icons.receipt_long_rounded,
+                title: 'Historial de ventas',
+                subtitle: 'Ver ventas realizadas',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const VentasHistorialPage()),
                   );
                 },
               ),

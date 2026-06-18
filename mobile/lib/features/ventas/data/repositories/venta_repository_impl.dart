@@ -7,6 +7,7 @@ import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/logger.dart';
 import '../datasources/venta_api_service.dart';
 import '../models/create_venta_request.dart';
+import '../../domain/entities/venta.dart';
 import '../../domain/repositories/venta_repository.dart';
 
 class VentaRepositoryImpl implements VentaRepository {
@@ -88,6 +89,29 @@ class VentaRepositoryImpl implements VentaRepository {
     }
 
     return ventaId;
+  }
+
+  @override
+  Future<List<Venta>> getAllVentasLocal() async {
+    final rows = await _database.getAllVentasLocales();
+    return rows.map((row) => Venta(
+      id: row.id,
+      empresaId: row.empresaId,
+      usuarioId: row.usuarioId,
+      sucursalId: row.sucursalId,
+      formaPago: row.formaPago,
+      metodoPago: row.metodoPago,
+      usoCfdi: row.usoCfdi,
+      subtotal: row.subtotal,
+      iva: row.iva,
+      total: row.total,
+      estado: row.estado,
+      backendId: row.backendId,
+      errorMessage: row.errorMessage,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      syncPending: row.syncPending,
+    )).toList();
   }
 
   @override
