@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/bloc/app_bloc_observer.dart';
 import 'core/config/app_config.dart';
 import 'core/database/app_database.dart';
 import 'core/database/debug/sat_db_debug_helper.dart';
 import 'core/di/injection_container.dart';
+import 'core/services/session_manager.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/bloc/auth_event.dart';
 import 'features/auth/presentation/bloc/auth_state.dart';
@@ -18,15 +20,17 @@ import 'features/pos/presentation/bloc/cart_bloc.dart';
 import 'features/ventas/presentation/bloc/venta_bloc.dart';
 import 'features/pos/presentation/pages/pos_page.dart';
 import 'features/ventas/presentation/pages/ventas_historial_page.dart';
+import 'features/sucursal/presentation/pages/select_sucursal_page.dart';
 import 'core/services/sync_status_service.dart';
 import 'features/sync/data/sat_sync_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  final prefs = await SharedPreferences.getInstance();
   final appConfig = AppConfig.fromEnvironment();
 
-  setupDependencies(appConfig);
+  await setupDependencies(appConfig, prefs);
 
   sl<SyncStatusService>().startMonitoring();
 
@@ -66,6 +70,9 @@ class MyApp extends StatelessWidget {
       home: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           if (state is AuthAuthenticated) {
+            if (state.authResult.activeSucursalId.isEmpty) {
+              return const SelectSucursalPage();
+            }
             return const HomePage();
           }
           return const LoginPage();
@@ -142,9 +149,10 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -181,7 +189,65 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withOpacity(0.2),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.store_rounded,
+                      size: 20,
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Sucursal actual',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            sl<SessionManager>().sucursalNombre.isNotEmpty
+                                ? sl<SessionManager>().sucursalNombre
+                                : 'Sin sucursal seleccionada',
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider.value(
+                              value: context.read<AuthBloc>(),
+                              child: const SelectSucursalPage(),
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.swap_horiz_rounded, size: 16),
+                      label: const Text('Cambiar'),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
               _MenuCard(
                 icon: Icons.point_of_sale_rounded,
                 title: 'Punto de Venta',
@@ -250,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                       )
                     : null,
               ),
-              const Spacer(),
+              const SizedBox(height: 16),
               TextButton.icon(
                 onPressed: () {
                   context.read<AuthBloc>().add(const AuthLogoutRequested());
@@ -261,7 +327,9 @@ class _HomePageState extends State<HomePage> {
                   foregroundColor: theme.colorScheme.error,
                 ),
               ),
+              const SizedBox(height: 8),
             ],
+          ),
           ),
         ),
       ),

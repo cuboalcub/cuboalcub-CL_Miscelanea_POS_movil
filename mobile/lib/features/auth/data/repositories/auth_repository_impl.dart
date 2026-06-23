@@ -81,7 +81,6 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       await _sessionManager.saveSession(authResult);
-      await _sessionManager.ensureSucursal();
 
       AppLogger.info('[AUTH] Login successful for: $email');
 

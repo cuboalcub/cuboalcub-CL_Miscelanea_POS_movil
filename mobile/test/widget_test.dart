@@ -36,11 +36,18 @@ class _MockSatSyncService implements SatSyncService {
   }
 }
 
+class _MockSessionManager {
+  Future<void> saveSession(AuthResult session) async {}
+  Future<AuthResult?> getSession() async => null;
+  Future<void> clearSession() async {}
+}
+
 void main() {
   testWidgets('LoginPage is displayed when unauthenticated', (tester) async {
     final authBloc = AuthBloc(
       authRepository: _MockAuthRepository(),
       satSyncService: _MockSatSyncService(),
+      sessionManager: _MockSessionManager() as dynamic,
     );
     authBloc.add(const AppStarted());
 

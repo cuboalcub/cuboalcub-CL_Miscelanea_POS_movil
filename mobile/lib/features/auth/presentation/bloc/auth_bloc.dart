@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/error_mapper.dart';
 import '../../../../core/errors/logger.dart';
+import '../../../../core/services/session_manager.dart';
 import '../../../sync/data/sat_sync_service.dart';
 import '../../domain/repositories/auth_repository.dart';
 import 'auth_event.dart';
@@ -10,15 +11,19 @@ import 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
   final SatSyncService _satSyncService;
+  final SessionManager _sessionManager;
 
   AuthBloc({
     required AuthRepository authRepository,
     required SatSyncService satSyncService,
+    required SessionManager sessionManager,
   })  : _authRepository = authRepository,
         _satSyncService = satSyncService,
+        _sessionManager = sessionManager,
         super(AuthInitial()) {
     on<AppStarted>(_onAppStarted);
     on<AuthLoginRequested>(_onLoginRequested);
+    on<AuthSucursalSelected>(_onSucursalSelected);
     on<AuthLogoutRequested>(_onLogoutRequested);
   }
 
@@ -52,6 +57,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AppLogger.error('Login failed', error: e, stackTrace: stackTrace);
       final failure = ErrorMapper.mapError(e);
       emit(AuthError(failure));
+    }
+  }
+
+  void _onSucursalSelected(
+    AuthSucursalSelected event,
+    Emitter<AuthState> emit,
+  ) async {
+    final session = await _sessionManager.getSession();
+    if (session != null) {
+      emit(AuthAuthenticated(authResult: session));
     }
   }
 

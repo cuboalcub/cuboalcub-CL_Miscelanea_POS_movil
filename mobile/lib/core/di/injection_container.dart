@@ -25,14 +25,17 @@ import '../../features/ventas/presentation/bloc/venta_bloc.dart';
 import '../../features/ventas/presentation/bloc/ventas_historial_bloc.dart';
 import '../../features/sync/data/sat_sync_service.dart';
 import '../../features/sync/data/catalog_sync_service.dart';
+import '../../features/sucursal/data/datasources/sucursal_api_service.dart';
+import '../../features/sucursal/data/repositories/sucursal_repository_impl.dart';
+import '../../features/sucursal/domain/repositories/sucursal_repository.dart';
 
 final sl = GetIt.instance;
 
-void setupDependencies(AppConfig appConfig) {
+Future<void> setupDependencies(AppConfig appConfig, SharedPreferences prefs) async {
   _registerAppConfig(appConfig);
   _registerCore();
   _registerDatabase();
-  _registerServices();
+  _registerServices(prefs);
   _registerRepositories();
   _registerBlocs();
 }
@@ -68,10 +71,14 @@ void _registerDatabase() {
   }
 }
 
-void _registerServices() {
+void _registerServices(SharedPreferences prefs) {
+  if (!sl.isRegistered<SharedPreferences>()) {
+    sl.registerSingleton<SharedPreferences>(prefs);
+  }
+
   if (!sl.isRegistered<SessionManager>()) {
     sl.registerLazySingleton<SessionManager>(
-      () => SessionManager(dio: sl<Dio>()),
+      () => SessionManager(dio: sl<Dio>(), prefs: sl<SharedPreferences>()),
     );
   }
 
@@ -84,17 +91,9 @@ void _registerServices() {
     );
   }
 
-  if (!sl.isRegistered<SharedPreferences>()) {
-    sl.registerLazySingletonAsync<SharedPreferences>(
-      () => SharedPreferences.getInstance(),
-    );
-  }
-
   if (!sl.isRegistered<CatalogSyncService>()) {
-    sl.registerLazySingletonAsync<CatalogSyncService>(
-      () async => CatalogSyncService(
-        prefs: await sl.getAsync<SharedPreferences>(),
-      ),
+    sl.registerLazySingleton<CatalogSyncService>(
+      () => CatalogSyncService(prefs: sl<SharedPreferences>()),
     );
   }
 
@@ -169,6 +168,23 @@ void _registerRepositories() {
       ),
     );
   }
+
+  if (!sl.isRegistered<SucursalApiService>()) {
+    sl.registerLazySingleton<SucursalApiService>(
+      () => SucursalApiService(
+        dio: sl<Dio>(),
+        sessionManager: sl<SessionManager>(),
+      ),
+    );
+  }
+
+  if (!sl.isRegistered<SucursalRepository>()) {
+    sl.registerLazySingleton<SucursalRepository>(
+      () => SucursalRepositoryImpl(
+        apiService: sl<SucursalApiService>(),
+      ),
+    );
+  }
 }
 
 void _registerBlocs() {
@@ -177,6 +193,7 @@ void _registerBlocs() {
       () => AuthBloc(
         authRepository: sl<AuthRepository>(),
         satSyncService: sl<SatSyncService>(),
+        sessionManager: sl<SessionManager>(),
       ),
     );
   }

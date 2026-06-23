@@ -21,6 +21,10 @@ class AuthLoginRequested extends AuthEvent {
   List<Object?> get props => [email, password];
 }
 
+class AuthSucursalSelected extends AuthEvent {
+  const AuthSucursalSelected();
+}
+
 class AuthLogoutRequested extends AuthEvent {
   const AuthLogoutRequested();
 }
